@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  database:
+    image: 'postgres:17.6'
+    restart: 'unless-stopped'
+    shm_size: 128mb
+    ports:
+      - 5432:5432
+    command: -c ssl=on -c ssl_cert_file=/etc/ssl/certs/ssl-cert-snakeoil.pem -c ssl_key_file=/etc/ssl/private/ssl-cert-snakeoil.key
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: recordpile
+    volumes:
+      - ./db-data/:/var/lib/postgresql/recordpile-data

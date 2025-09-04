@@ -20,36 +20,34 @@ export class PileItem {
   id: string;
 
   @Column({
-    type: 'varchar',
+    type: 'enum',
     enum: PileItemStatus,
     default: PileItemStatus.QUEUED,
   })
   status: PileItemStatus;
 
-  @Column({ type: 'varchar', length: 255 })
+  @Column({ type: 'text' })
   artistName: string;
 
-  @Column({ type: 'varchar', length: 255 })
+  @Column({ type: 'text' })
   albumName: string;
 
   @Column({
-    type: 'varchar',
-    length: 255,
+    type: 'text',
     unique: true,
     nullable: true,
   })
   discogsReleaseId: string;
 
   @Column({
-    type: 'varchar',
-    length: 255,
+    type: 'text',
     unique: true,
     nullable: true,
   })
   musicBrainzReleaseGroupId: string;
 
   @Column({
-    type: 'blob',
+    type: 'bytea',
     nullable: true,
     select: false,
   })
@@ -59,13 +57,13 @@ export class PileItem {
   createdAt: Date;
 
   @Column({
-    type: 'text',
+    type: 'timestamp',
     nullable: true,
   })
   listenedAt: Date;
 
   @Column({
-    type: 'text',
+    type: 'timestamp',
     nullable: true,
   })
   didNotFinishAt: Date;
