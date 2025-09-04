@@ -1,0 +1,49 @@
+.main {
+  display: grid;
+  padding: 16px;
+  grid-gap: 16px;
+  grid-template-columns: 1fr 2fr;
+  grid-template-areas:
+    'header header'
+    'form list';
+
+  .header {
+    grid-area: header;
+  }
+
+  .pile {
+    display: inline-grid;
+    grid-area: list;
+    gap: 8px;
+
+    .item {
+      display: flex;
+      padding: 12px 16px;
+      background: #5D9493;
+      align-items: center;
+      gap: 8px;
+      border-radius: 4px;
+
+      img {
+        max-width: 100px;
+      }
+
+      .albumInfo {
+        display: grid;
+        gap: 4px;
+
+        .artist {
+          font-weight: 600;
+          font-size: 1.25rem;
+        }
+      }
+    }
+  }
+
+  .createForm {
+    display: grid;
+    grid-auto-columns: min-content;
+    grid-gap: 8px;
+    grid-area: form;
+  }
+}
