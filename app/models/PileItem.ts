@@ -14,6 +14,12 @@ export enum PileItemStatus {
   DID_NOT_FINISH = 'dnf',
 }
 
+export const PileItemStatusLabels: Record<PileItemStatus, string> = {
+  [PileItemStatus.QUEUED]: 'Queued',
+  [PileItemStatus.LISTENED]: 'Listened',
+  [PileItemStatus.DID_NOT_FINISH]: 'Did Not Finish',
+};
+
 @Entity()
 export class PileItem {
   @PrimaryGeneratedColumn("uuid")
@@ -54,7 +60,7 @@ export class PileItem {
   coverImage: Buffer<ArrayBuffer>;
 
   @CreateDateColumn({ insert: true })
-  createdAt: Date;
+  addedAt: Date;
 
   @Column({
     type: 'timestamp',

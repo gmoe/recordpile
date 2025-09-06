@@ -1,6 +1,6 @@
 ## Getting Started
 
-First, run the development server:
+First, install `direnv` if you don't have it already, then:
 
 ```bash
 docker-compose up -d # Start postgres

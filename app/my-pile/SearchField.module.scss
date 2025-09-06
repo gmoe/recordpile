@@ -1,0 +1,32 @@
+.searchInput {
+  position: relative;
+  width: 500px;
+  padding: 4px 12px;
+  border-radius: 4px;
+}
+
+.resultsPanel {
+  max-height: 400px;
+  margin-top: 4px;
+  padding: 16px;
+  background: #5d9493;
+  overflow-y: auto;
+  box-shadow: 0 4px 8px 1px rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+
+  .resultItem {
+    display: flex;
+    padding: 8px;
+    gap: 12px;
+    border-bottom: 1px solid #aaa;
+    list-style: none;
+
+    img {
+      height: 100px;
+      width: 100px;
+      object-fit: cover;
+    }
+
+    &:last-child { border-bottom: 0; }
+  }
+}

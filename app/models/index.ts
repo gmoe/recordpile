@@ -2,9 +2,7 @@
 import dataSource from './dataSource';
 import { PileItem } from './PileItem';
 
-export {
-  PileItem,
-};
+export * from './PileItem';
 
 export const dbSource = async () => {
   if (!dataSource.isInitialized) {
