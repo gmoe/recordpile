@@ -1,0 +1,35 @@
+.item {
+  display: grid;
+  padding: 16px;
+  grid-template-areas: 'cover info controls';
+  grid-template-columns: min-content 1fr 1fr;
+  align-items: center;
+  gap: 16px;
+  border: 1px solid var(--foreground);
+  border-radius: 4px;
+
+  img {
+    grid-area: cover;
+    width: 100px;
+    height: 100px;
+    color: var(--foreground);
+  }
+
+  .albumInfo {
+    grid-area: info;
+    display: grid;
+    gap: 4px;
+
+    .artist {
+      font-weight: 600;
+      font-size: 1.25rem;
+    }
+  }
+
+  .controls {
+    grid-area: controls;
+    display: grid;
+    justify-self: end;
+    gap: 4px;
+  }
+}
