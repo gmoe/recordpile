@@ -22,9 +22,6 @@ export default async function MyPilePage() {
           <PileItem key={item.id} item={item} />
         ))}
       </ol>
-
-
-
     </main>
   );
 }

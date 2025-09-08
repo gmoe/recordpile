@@ -1,9 +1,19 @@
 'use client';
-import { useEffect, useState, useTransition } from 'react';
+import { useCallback, useEffect, useState, useTransition } from 'react';
 import { useFloating, useDismiss, useInteractions, autoUpdate } from '@floating-ui/react';
+import { format } from 'date-fns';
 import { IReleaseGroupList } from 'musicbrainz-api';
+
 import useDebounce from '@/app/util/useDebounce';
-import { searchForNewItems } from './actions';
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeading,
+  DialogDescription,
+  DialogClose,
+} from '@/app/components/Dialog';
+import { createPileItem, searchForNewItems } from './actions';
 import styles from './SearchField.module.scss';
 
 export default function SearchField() {
@@ -11,18 +21,7 @@ export default function SearchField() {
   const debouncedSearchValue = useDebounce(searchValue);
   const [isPending, startTransition] = useTransition();
   const [results, setResults] = useState<IReleaseGroupList | null>(null);
-
-  const [resultsOpen, setResultsOpen] = useState<boolean>(false);
-  const { refs, floatingStyles, context } = useFloating<HTMLInputElement>({
-    open: resultsOpen,
-    onOpenChange: setResultsOpen,
-    whileElementsMounted: autoUpdate,
-  });
-  const dismiss = useDismiss(context);
-
-  const { getReferenceProps, getFloatingProps } = useInteractions([
-    dismiss,
-  ]);
+  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
 
   useEffect(() => {
     startTransition(async () => {
@@ -30,27 +29,36 @@ export default function SearchField() {
       const result = await searchForNewItems(debouncedSearchValue);
       setResults(result);
       console.log('search result', result);
-      setResultsOpen(true);
     });
   }, [debouncedSearchValue, setResults]);
 
+  const handleAddToPile = useCallback(async (
+    result: IReleaseGroupList['release-groups'][0]
+  ) => {
+    await createPileItem({
+      albumName: result.title,
+      artistName: result['artist-credit'].map(artist => artist.name).join(', '),
+      musicBrainzReleaseGroupId: result.id,
+    });
+    setIsDialogOpen(false);
+  }, [setIsDialogOpen]);
+
   return (
     <>
-      <input
-        ref={refs.setReference}
-        className={styles.searchInput}
-        type="text"
-        onChange={(event) => setSearchValue(event.target.value)}
-        value={searchValue}
-        {...getReferenceProps()}
-      />
-      {resultsOpen && results && (results.count ?? false) && (
-        <div
-          ref={refs.setFloating}
-          className={styles.resultsPanel}
-          style={floatingStyles}
-          {...getFloatingProps()}
-        >
+    <button type="button" onClick={() => setIsDialogOpen(true)}>
+      Add Item
+    </button>
+    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+      <DialogContent>
+        <DialogHeading>Add to Pile</DialogHeading>
+        <DialogDescription>
+        <input
+          className={styles.searchInput}
+          type="text"
+          onChange={(event) => setSearchValue(event.target.value)}
+          value={searchValue}
+        />
+        {results && (results.count ?? false) && (
           <ol>
             {results['release-groups'].map((result) => (
               <li key={result.id} className={styles.resultItem}>
@@ -59,20 +67,40 @@ export default function SearchField() {
                   src={`https://coverartarchive.org/release-group/${result.id}/front-200`}
                   alt=""
                 />
-                <span>
-                  "{result.title ?? '[[No Title]]'}"
-                </span>
-                <span>
-                  {result['artist-credit'].map(artist => artist.name).join(', ') ?? '[[No Artist ]]'}
-                </span>
-                <span>
-                  {result['first-release-date'] ?? '[[No Date]]'}
-                </span>
+                <div className={styles.albumSection}>
+                  <span className={styles.album}>
+                    {result.title}
+                  </span>
+                  <span className={styles.artist}>
+                    {result['artist-credit'].map(artist => artist.name).join(', ')}
+                  </span>
+                </div>
+                <div className={styles.controls}>
+                  <span>
+                    Release Date: {result['first-release-date'] ?? 'Unknown'}
+                  </span>
+                  <button
+                    type="button"
+                    disabled={isPending}
+                  >
+                    View (TODO)
+                  </button>
+                  <button
+                    type="button"
+                    disabled={isPending}
+                    onClick={() => handleAddToPile(result)}
+                  >
+                    Add to Pile
+                  </button>
+                </div>
               </li>
             ))}
           </ol>
-        </div>
-      )}
+        )}
+        </DialogDescription>
+        <DialogClose>Close</DialogClose>
+      </DialogContent>
+    </Dialog>
     </>
   );
 }

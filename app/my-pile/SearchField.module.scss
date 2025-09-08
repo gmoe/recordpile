@@ -1,32 +1,47 @@
 .searchInput {
-  position: relative;
+  height: 32px;
   width: 500px;
-  padding: 4px 12px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 12px;
+  padding: 0 12px;
   border-radius: 4px;
 }
 
-.resultsPanel {
-  max-height: 400px;
-  margin-top: 4px;
-  padding: 16px;
-  background: #5d9493;
-  overflow-y: auto;
-  box-shadow: 0 4px 8px 1px rgba(0, 0, 0, 0.2);
-  border-radius: 4px;
+.resultItem {
+  display: grid;
+  max-width: 800px;
+  padding: 8px;
+  gap: 12px;
+  grid-template-columns: min-content 1fr 1fr;
+  border-bottom: 1px solid #aaa;
+  list-style: none;
 
-  .resultItem {
-    display: flex;
-    padding: 8px;
-    gap: 12px;
-    border-bottom: 1px solid #aaa;
-    list-style: none;
-
-    img {
-      height: 100px;
-      width: 100px;
-      object-fit: cover;
-    }
-
-    &:last-child { border-bottom: 0; }
+  img {
+    height: 100px;
+    width: 100px;
+    object-fit: cover;
   }
+
+  .albumSection {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    .album {
+      font-weight: 600;
+      font-size: 1.25rem;
+    }
+    .artist {
+    }
+  }
+
+  .controls {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: end;
+  }
+
+  &:last-child { border-bottom: 0; }
 }

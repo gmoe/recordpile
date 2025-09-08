@@ -51,6 +51,36 @@ input:focus {
   outline: 0;
 }
 
+button {
+  display: inline-flex;
+  margin: 1px;
+  padding: 8px 12px;
+  background: var(--foreground);
+  color: var(--background);
+  border: 1px solid var(--foreground);
+  transition-property: background, color;
+  transition-duration: 150ms;
+  transition-timing-function: ease-in;
+}
+
+button:hover {
+  color: var(--foreground);
+  background: var(--background);
+  outline: 0;
+}
+
+button:active {
+  margin: 0;
+  border-width: 2px;
+}
+
+button:disabled {
+  background: var(--gray);
+  border-color: var(--gray);
+  color: var(--foreground);
+  cursor: not-allowed;
+}
+
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;

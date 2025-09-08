@@ -6,9 +6,10 @@
 
 ## My Pile
 
-- Filter list by date added, genre, artist, label
+- Filter list by date added, genre, artist, label, owned
 - Custom sort order, otherwise sort by added date
 - Search through pile
+- Determine if phyiscal media is owned via discogs, set column
 - Push items off the list
   - Optionally add review on Discogs
   - Last.fm scrobbling

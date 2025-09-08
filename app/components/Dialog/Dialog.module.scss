@@ -1,0 +1,40 @@
+.overlay {
+  display: grid;
+  place-items: center;
+  background: rgba(0, 0, 0, 0.8);
+}
+
+.dialog {
+  max-height: 90vh;
+  max-width: 1200px;
+  margin: 15px;
+  padding: 15px;
+  background-color: var(--background);
+  overflow-y: auto;
+}
+
+.dialogHeader {
+  display: flex;
+  padding: 12px 0;
+  align-items: center;
+  justify-content: space-between;
+
+  .closeButton {
+    background: transparent;
+    color: var(--foreground);
+    border: 0;
+
+    &:hover {
+      background: var(--foreground);
+      color: var(--background);
+    }
+  }
+}
+
+.dialogFooter {
+  display: flex;
+  margin-top: 12px;
+  align-items: center;
+  justify-content: end;
+  gap: 8px;
+}

@@ -8,6 +8,7 @@
   .header {
     display: flex;
     gap: 16px;
+    justify-content: space-between;
     align-items: center;
   }
 
@@ -16,12 +17,5 @@
     gap: 16px;
     list-style: none;
     overflow-x: auto;
-  }
-
-  .createForm {
-    display: grid;
-    grid-auto-columns: min-content;
-    grid-gap: 8px;
-    grid-area: form;
   }
 }

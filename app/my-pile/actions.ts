@@ -43,22 +43,32 @@ export async function getDiscogsCollection() {
 }
 
 export async function searchForNewItems(query: string): Promise<IReleaseGroupList> {
+  // TODO: Handle pagination
   const releases = await mbApi.search('release-group', { query });
   return releases;
 }
 
-export async function createPileItem(formData: FormData) {
+export async function createPileItem(pileItem: {
+  artistName: string,
+  albumName: string,
+  musicBrainzReleaseGroupId?: string,
+}) {
   const item = new PileItem();
 
   // TODO validation
-  item.artistName = formData.get('artistName') as string;
-  item.albumName = formData.get('albumName') as string;
-  if (formData.has('coverImage')) {
-    const buffer = await (formData.get('coverImage') as File).arrayBuffer();
-    item.coverImage = await Buffer.from(buffer);
+  item.artistName = pileItem.artistName;
+  item.albumName = pileItem.albumName;
+  if (pileItem.musicBrainzReleaseGroupId) {
+    item.musicBrainzReleaseGroupId = pileItem.musicBrainzReleaseGroupId;
+    const coverImageRes = await fetch(
+      `https://coverartarchive.org/release-group/${pileItem.musicBrainzReleaseGroupId}/front-1200`
+    );
+    const coverImage = await coverImageRes.bytes();
+    item.coverImage = await Buffer.from(coverImage);
   }
 
   const con = await dbSource();
   await con.pileItemRepo.save(item);
+
   revalidatePath('/my-pile');
 }
