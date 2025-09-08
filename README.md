@@ -1,4 +1,12 @@
-## Getting Started
+# RecordPile
+
+RecordPile is the TBR list for your music. Backed by the MusicBrainz and Discogs APIs.
+
+It's currently in active development and not ready for regular use.
+
+![RecordPile screenshot featuring a list of albums](/docs/demo.png)
+
+## Local development
 
 First, install `direnv` if you don't have it already, then:
 
