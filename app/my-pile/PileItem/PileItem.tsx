@@ -1,7 +1,7 @@
 'use client';
 import { format } from 'date-fns';
 import { PileItemStatusLabels } from '@/app/models/PileItemTypes';
-import { ClientPileItem } from '../actions';
+import { ClientPileItem, deletePileItem } from '../actions';
 import missingArt from './missingArt.svg';
 import styles from './PileItem.module.scss';
 
@@ -25,8 +25,11 @@ export default function PileItem({ item }: PileItemProps) {
         <span className={styles.album}>{item.albumName}</span>
       </div>
       <div className={styles.controls}>
-        <p>Added: {format(item.addedAt, 'PP')}</p>
-        <p>Status: {PileItemStatusLabels[item.status]}</p>
+        <span>Added: {format(item.addedAt, 'PP')}</span>
+        <span>Status: {PileItemStatusLabels[item.status]}</span>
+        <button onClick={() => deletePileItem(item.id)}>
+          Remove
+        </button>
       </div>
     </li>
   );

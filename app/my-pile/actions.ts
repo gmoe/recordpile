@@ -1,5 +1,6 @@
 'use server';
 import { revalidatePath } from 'next/cache';
+import { notFound } from 'next/navigation';
 import { MusicBrainzApi, IReleaseGroupList } from 'musicbrainz-api';
 import { DiscogsClient } from '@lionralfs/discogs-client';
 import { dbSource, PileItem } from '@/app/models';
@@ -69,6 +70,18 @@ export async function createPileItem(pileItem: {
 
   const con = await dbSource();
   await con.pileItemRepo.save(item);
+
+  revalidatePath('/my-pile');
+}
+
+export async function deletePileItem(id: string) {
+  const con = await dbSource();
+
+  try {
+    await con.pileItemRepo.delete(id);
+  } catch (error) {
+    return notFound();
+  }
 
   revalidatePath('/my-pile');
 }
