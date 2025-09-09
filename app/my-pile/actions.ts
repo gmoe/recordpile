@@ -3,8 +3,9 @@ import { revalidatePath } from 'next/cache';
 import { notFound } from 'next/navigation';
 import { MusicBrainzApi, IReleaseGroupList } from 'musicbrainz-api';
 import { DiscogsClient } from '@lionralfs/discogs-client';
-import { FindManyOptions, ILike } from 'typeorm';
+import { FindManyOptions, ILike, Any } from 'typeorm';
 import { dbSource, PileItem } from '@/app/models';
+import { PileItemStatus } from '@/app/models/PileItemTypes';
 
 const mbApi = new MusicBrainzApi({
   appName: 'record-pile',
@@ -18,7 +19,10 @@ export type ClientPileItem = PileItem & {
 
 type PileItemSearchFilters = {
   searchQuery?: string;
-  filters?: Partial<Pick<PileItem, 'owned' | 'status'>>;
+  filters?: {
+    owned?: boolean;
+    status?: PileItemStatus[];
+  }
 };
 
 export async function getPileItems(
@@ -29,11 +33,20 @@ export async function getPileItems(
   const query = {} as FindManyOptions<PileItem>;
   if (searchFilters.searchQuery) {
     query.where = [
-      { artistName: ILike(`%${searchFilters.searchQuery}%`), ...searchFilters.filters },
-      { albumName: ILike(`%${searchFilters.searchQuery}%`), ...searchFilters.filters },
+      { artistName: ILike(`%${searchFilters.searchQuery}%`) },
+      { albumName: ILike(`%${searchFilters.searchQuery}%`) },
     ];
-  } else if (searchFilters.filters) {
-    query.where = searchFilters.filters;
+
+    if (searchFilters.filters?.status) {
+      query.where = query.where.map((part) => ({
+        ...part,
+        status: Any(searchFilters.filters?.status ?? []),
+      }));
+    }
+  } else if (searchFilters.filters?.status) {
+    query.where = {
+      status: Any(searchFilters.filters.status),
+    };
   }
 
   const pileItems = await con.pileItemRepo.find(query);

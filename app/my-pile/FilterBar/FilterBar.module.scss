@@ -1,0 +1,22 @@
+.filterBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+
+  .filter {
+    margin: 0;
+    background: var(--background);
+    color: var(--foreground);
+    border-right: 0;
+
+    &:last-child {
+      border-right: 1px solid var(--foreground);
+    }
+
+    &.active {
+      background: var(--foreground);
+      color: var(--background);
+    }
+  }
+}

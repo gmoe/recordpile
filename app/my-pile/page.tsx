@@ -10,12 +10,14 @@ import styles from './page.module.scss';
 export default async function MyPilePage(props: {
   searchParams?: Promise<{
     query?: string;
+    filters?: string;
     page?: string;
   }>;
 }) {
   const searchParams = await props.searchParams ?? {};
   const pileItems = await getPileItems({
     searchQuery: searchParams.query,
+    filters: searchParams.filters ? JSON.parse(searchParams.filters) : undefined,
   });
 
   return (
