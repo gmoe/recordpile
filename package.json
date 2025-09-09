@@ -13,6 +13,7 @@
     "@lionralfs/discogs-client": "^4.1.3",
     "class-variance-authority": "^0.7.1",
     "date-fns": "^4.1.0",
+    "lucide-react": "^0.543.0",
     "musicbrainz-api": "^0.25.1",
     "next": "15.5.0",
     "pg": "^8.16.3",

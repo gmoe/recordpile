@@ -12,6 +12,7 @@ import {
   FloatingOverlay,
   useId,
 } from '@floating-ui/react';
+import { X } from 'lucide-react';
 import { useDialog, useDialogContext, DialogContext } from './utils';
 import styles from './Dialog.module.scss';
 
@@ -112,7 +113,7 @@ export const DialogHeading = forwardRef<
         className={styles.closeButton}
         onClick={() => setOpen(false)}
       >
-        X
+        <X size={24} />
       </button>
     </header>
   );
@@ -133,9 +134,9 @@ export const DialogDescription = forwardRef<
   }, [id, setDescriptionId]);
 
   return (
-    <p {...props} ref={ref} id={id}>
+    <div {...props} ref={ref} id={id}>
       {children}
-    </p>
+    </div>
   );
 });
 

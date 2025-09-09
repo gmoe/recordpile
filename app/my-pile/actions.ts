@@ -3,6 +3,7 @@ import { revalidatePath } from 'next/cache';
 import { notFound } from 'next/navigation';
 import { MusicBrainzApi, IReleaseGroupList } from 'musicbrainz-api';
 import { DiscogsClient } from '@lionralfs/discogs-client';
+import { FindManyOptions, ILike } from 'typeorm';
 import { dbSource, PileItem } from '@/app/models';
 
 const mbApi = new MusicBrainzApi({
@@ -15,9 +16,27 @@ export type ClientPileItem = PileItem & {
   coverImageUrl: string;
 };
 
-export async function getPileItems(): Promise<ClientPileItem[]> {
+type PileItemSearchFilters = {
+  searchQuery?: string;
+  filters?: Partial<Pick<PileItem, 'owned' | 'status'>>;
+};
+
+export async function getPileItems(
+  searchFilters: PileItemSearchFilters = {},
+): Promise<ClientPileItem[]> {
   const con = await dbSource();
-  const pileItems = await con.pileItemRepo.find();
+
+  const query = {} as FindManyOptions<PileItem>;
+  if (searchFilters.searchQuery) {
+    query.where = [
+      { artistName: ILike(`%${searchFilters.searchQuery}%`), ...searchFilters.filters },
+      { albumName: ILike(`%${searchFilters.searchQuery}%`), ...searchFilters.filters },
+    ];
+  } else if (searchFilters.filters) {
+    query.where = searchFilters.filters;
+  }
+
+  const pileItems = await con.pileItemRepo.find(query);
 
   return pileItems.map((item) => ({
     ...item,
@@ -80,6 +99,7 @@ export async function updatePileItem(
 ) {
   const con = await dbSource();
 
+  // TODO: Validation
   await con.pileItemRepo.update({ id }, payload);
   revalidatePath('/my-pile');
 }

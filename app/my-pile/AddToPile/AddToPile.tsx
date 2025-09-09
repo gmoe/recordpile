@@ -13,10 +13,11 @@ import {
   DialogDescription,
   DialogClose,
 } from '@/app/components/Dialog';
-import { createPileItem, searchForNewItems } from './actions';
-import styles from './SearchField.module.scss';
+import SearchInput from '@/app/components/SearchInput';
+import { createPileItem, searchForNewItems } from '../actions';
+import styles from './AddToPile.module.scss';
 
-export default function SearchField() {
+export default function AddToPile() {
   const [searchValue, setSearchValue] = useState<string>('');
   const debouncedSearchValue = useDebounce(searchValue);
   const [isPending, startTransition] = useTransition();
@@ -28,6 +29,7 @@ export default function SearchField() {
       if (!debouncedSearchValue.length) return;
       const result = await searchForNewItems(debouncedSearchValue);
       setResults(result);
+      console.log('search result', result);
     });
   }, [debouncedSearchValue, setResults]);
 
@@ -51,10 +53,9 @@ export default function SearchField() {
       <DialogContent>
         <DialogHeading>Add to Pile</DialogHeading>
         <DialogDescription>
-        <input
-          className={styles.searchInput}
-          type="text"
+        <SearchInput
           onChange={(event) => setSearchValue(event.target.value)}
+          onClear={() => setSearchValue('')}
           value={searchValue}
         />
         {results && (results.count ?? false) && (

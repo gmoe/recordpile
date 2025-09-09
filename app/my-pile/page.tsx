@@ -1,20 +1,30 @@
 'use server';
 import { dbSource } from '@/app/models';
 import { getPileItems, createPileItem } from './actions';
-import SearchField from './SearchField';
+import AddToPile from './AddToPile';
+import FilterBar from './FilterBar';
 import PileItem from './PileItem';
 import logo from './logo.svg';
 import styles from './page.module.scss';
 
-export default async function MyPilePage() {
-  const pileItems = await getPileItems();
+export default async function MyPilePage(props: {
+  searchParams?: Promise<{
+    query?: string;
+    page?: string;
+  }>;
+}) {
+  const searchParams = await props.searchParams ?? {};
+  const pileItems = await getPileItems({
+    searchQuery: searchParams.query,
+  });
 
   return (
     <main className={styles.main}>
       <header className={styles.header}>
         <img src={logo.src} alt="RecordPile logo" />
-        <SearchField />
+        <AddToPile />
       </header>
+      <FilterBar />
       <ol className={styles.pile}>
         {pileItems.map((item) => (
           <PileItem key={item.id} item={item} />
