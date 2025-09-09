@@ -74,6 +74,16 @@ export async function createPileItem(pileItem: {
   revalidatePath('/my-pile');
 }
 
+export async function updatePileItem(
+  id: string,
+  payload: Partial<Pick<PileItem, 'status' | 'owned' | 'notes'>>
+) {
+  const con = await dbSource();
+
+  await con.pileItemRepo.update({ id }, payload);
+  revalidatePath('/my-pile');
+}
+
 export async function deletePileItem(id: string) {
   const con = await dbSource();
 

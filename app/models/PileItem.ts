@@ -27,6 +27,9 @@ export class PileItem {
   @Column({ type: 'text' })
   albumName: string;
 
+  @Column({ type: 'boolean', default: false })
+  owned: boolean;
+
   @Column({
     type: 'text',
     unique: true,
@@ -62,6 +65,12 @@ export class PileItem {
     nullable: true,
   })
   didNotFinishAt: Date;
+
+  @Column({
+    type: 'text',
+    nullable: true,
+  })
+  notes: string;
 }
 
 @EventSubscriber()

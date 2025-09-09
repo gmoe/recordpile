@@ -9,8 +9,6 @@ import styles from './page.module.scss';
 export default async function MyPilePage() {
   const pileItems = await getPileItems();
 
-  console.log(pileItems);
-
   return (
     <main className={styles.main}>
       <header className={styles.header}>

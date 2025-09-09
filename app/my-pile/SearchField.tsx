@@ -28,7 +28,6 @@ export default function SearchField() {
       if (!debouncedSearchValue.length) return;
       const result = await searchForNewItems(debouncedSearchValue);
       setResults(result);
-      console.log('search result', result);
     });
   }, [debouncedSearchValue, setResults]);
 

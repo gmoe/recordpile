@@ -1,0 +1,43 @@
+.select {
+  padding: 4px 12px;
+  border: 1px solid var(--foreground);
+  cursor: pointer;
+  transition-property: color, background;
+  transition-duration: 150ms;
+  transition-timing-function: ease-in;
+
+  &:hover {
+    color: var(--background);
+    background-color: var(--foreground);
+  }
+
+  &.disabled {
+    cursor: not-allowed;
+    background: var(--gray);
+    color: var(--foreground);
+  }
+}
+
+.popup {
+  display: grid;
+  padding: 12px 8px;
+  gap: 8px;
+  border: 1px solid var(--foreground);
+  background: var(--background);
+  list-style: none;
+  outline: 0;
+
+  .option {
+    padding: 8px 12px;
+    cursor: pointer;
+
+    &:hover {
+      background: var(--foreground);
+      color: var(--background);
+    }
+
+    &.selected {
+      text-decoration: underline;
+    }
+  }
+}

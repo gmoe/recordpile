@@ -55,6 +55,7 @@ button {
   display: inline-flex;
   margin: 1px;
   padding: 8px 12px;
+  font-size: 1rem;
   background: var(--foreground);
   color: var(--background);
   border: 1px solid var(--foreground);
