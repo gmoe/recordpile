@@ -20,6 +20,7 @@ import {
   useInteractions,
   FloatingFocusManager,
 } from '@floating-ui/react';
+import { ChevronsUpDown } from 'lucide-react';
 import { cva } from 'class-variance-authority';
 import styles from './Select.module.scss';
 
@@ -89,7 +90,10 @@ export default function Select({
         ref={refs.setReference}
         onClick={() => setIsOpen(!isOpen)}
       >
-        {activeOption.props.children}
+        <div className={styles.activeOption}>
+          {activeOption.props.children}
+        </div>
+        <ChevronsUpDown size={20} />
       </div>
       {isOpen && (
         <FloatingFocusManager context={context} modal={false}>

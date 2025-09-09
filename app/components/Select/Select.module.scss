@@ -1,6 +1,11 @@
 .select {
-  padding: 4px 12px;
+  display: inline-flex;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 12px;
+  padding-right: 4px;
   border: 1px solid var(--foreground);
+  align-items: center;
   cursor: pointer;
   transition-property: color, background;
   transition-duration: 150ms;
@@ -15,6 +20,12 @@
     cursor: not-allowed;
     background: var(--gray);
     color: var(--foreground);
+  }
+
+  .activeOption {
+    flex-grow: 1;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 }
 
