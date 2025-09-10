@@ -2,7 +2,7 @@
 
 import 'reflect-metadata';
 import { DataSource } from 'typeorm';
-import { PileItem } from './PileItem';
+import { PileItem, PileItemSubscriber } from './PileItem';
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -10,6 +10,7 @@ const AppDataSource = new DataSource({
   type: 'postgres',
   database: 'recordpile',
   entities: [PileItem],
+  subscribers: [PileItemSubscriber],
   synchronize: !isProduction,
   logging: !isProduction,
   host: 'localhost',

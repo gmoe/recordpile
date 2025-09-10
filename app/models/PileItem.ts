@@ -80,19 +80,17 @@ export class PileItemSubscriber implements EntitySubscriberInterface<PileItem> {
   }
 
   beforeUpdate(event: UpdateEvent<PileItem>) {
-    if (event.entity && event.databaseEntity) {
-      if (event.entity.status !== event.databaseEntity.status) {
-        switch (event.entity.status) {
-          case PileItemStatus.LISTENED:
-            event.entity.listenedAt = new Date();
-            break;
-          case PileItemStatus.DID_NOT_FINISH:
-            event.entity.didNotFinishAt = new Date();
-            break;
-          case PileItemStatus.QUEUED:
-            break;
-          default: throw new Error('Unhandled PileItemStatus');
-        }
+    if (event.entity?.status) {
+      switch (event.entity.status) {
+        case PileItemStatus.LISTENED:
+          event.entity.listenedAt = new Date();
+          break;
+        case PileItemStatus.DID_NOT_FINISH:
+          event.entity.didNotFinishAt = new Date();
+          break;
+        case PileItemStatus.QUEUED:
+          break;
+        default: throw new Error('Unhandled PileItemStatus');
       }
     }
   }

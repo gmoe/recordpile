@@ -26,14 +26,22 @@ export default function PileItem({ item }: PileItemProps) {
         <span className={styles.album}>{item.albumName}</span>
       </div>
       <div className={styles.controls}>
-        <span>Added: {format(item.addedAt, 'PP')}</span>
+        {item.status === PileItemStatus.QUEUED && (
+          <span>Added: {format(item.addedAt, 'PP')}</span>
+        )}
+        {item.status === PileItemStatus.LISTENED && (
+          <span>Listened: {format(item.listenedAt, 'PP')}</span>
+        )}
+        {item.status === PileItemStatus.DID_NOT_FINISH && (
+          <span>DNF: {format(item.didNotFinishAt, 'PP')}</span>
+        )}
         <Select
           onChange={(value) => updatePileItem(item.id, { status: (value as PileItemStatus) })}
           value={item.status}
         >
-          <option value="queued">Queued</option>
-          <option value="listened">Finished</option>
-          <option value="didNotFinish">Did Not Finish</option>
+          <option value={PileItemStatus.QUEUED}>Queued</option>
+          <option value={PileItemStatus.LISTENED}>Listened</option>
+          <option value={PileItemStatus.DID_NOT_FINISH}>Did Not Finish</option>
         </Select>
         <button onClick={() => deletePileItem(item.id)}>
           Remove

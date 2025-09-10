@@ -15,7 +15,11 @@
       border-right: 1px solid var(--foreground);
     }
 
-    &.active {
+    &:active {
+      border-width: 1px;
+    }
+
+    &.selected {
       background: var(--foreground);
       color: var(--background);
     }

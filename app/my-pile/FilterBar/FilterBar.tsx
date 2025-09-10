@@ -9,8 +9,8 @@ import styles from './FilterBar.module.scss';
 
 const filterCva = cva(styles.filter, {
   variants: {
-    active: {
-      true: styles.active,
+    selected: {
+      true: styles.selected,
     },
   },
 });
@@ -71,7 +71,7 @@ export default function FilterBar() {
         <button
           role="switch"
           aria-checked={filters.status[PileItemStatus.QUEUED]}
-          className={filterCva({ active: filters.status[PileItemStatus.QUEUED] })}
+          className={filterCva({ selected: filters.status[PileItemStatus.QUEUED] })}
           onClick={() => setFilters((s) => ({
             ...s,
             status: {
@@ -87,7 +87,7 @@ export default function FilterBar() {
         <button
           role="switch"
           aria-checked={filters.status[PileItemStatus.LISTENED]}
-          className={filterCva({ active: filters.status[PileItemStatus.LISTENED] })}
+          className={filterCva({ selected: filters.status[PileItemStatus.LISTENED] })}
           onClick={() => setFilters((s) => ({
             ...s,
             status: {
@@ -103,7 +103,7 @@ export default function FilterBar() {
         <button
           role="switch"
           aria-checked={filters.status[PileItemStatus.DID_NOT_FINISH]}
-          className={filterCva({ active: filters.status[PileItemStatus.DID_NOT_FINISH] })}
+          className={filterCva({ selected: filters.status[PileItemStatus.DID_NOT_FINISH] })}
           onClick={() => setFilters((s) => ({
             ...s,
             status: {
