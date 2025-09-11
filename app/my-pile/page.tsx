@@ -3,7 +3,7 @@ import { dbSource } from '@/app/models';
 import { getPileItems, createPileItem } from './actions';
 import AddToPile from './AddToPile';
 import FilterBar from './FilterBar';
-import PileItem from './PileItem';
+import PileItems from './PileItems';
 import logo from './logo.svg';
 import styles from './page.module.scss';
 
@@ -27,11 +27,7 @@ export default async function MyPilePage(props: {
         <AddToPile />
       </header>
       <FilterBar />
-      <ol className={styles.pile}>
-        {pileItems.map((item) => (
-          <PileItem key={item.id} item={item} />
-        ))}
-      </ol>
+      <PileItems pileItems={pileItems} />
     </main>
   );
 }

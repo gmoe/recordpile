@@ -29,7 +29,6 @@ export default function AddToPile() {
       if (!debouncedSearchValue.length) return;
       const result = await searchForNewItems(debouncedSearchValue);
       setResults(result);
-      console.log('search result', result);
     });
   }, [debouncedSearchValue, setResults]);
 
@@ -41,8 +40,10 @@ export default function AddToPile() {
       artistName: result['artist-credit'].map(artist => artist.name).join(', '),
       musicBrainzReleaseGroupId: result.id,
     });
+    setSearchValue('');
+    setResults(null);
     setIsDialogOpen(false);
-  }, [setIsDialogOpen]);
+  }, [setSearchValue, setResults, setIsDialogOpen]);
 
   return (
     <>

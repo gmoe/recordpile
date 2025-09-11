@@ -1,8 +1,11 @@
 'use client';
 import { format } from 'date-fns';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+
 import { PileItemStatus, PileItemStatusLabels } from '@/app/models/PileItemTypes';
 import Select from '@/app/components/Select';
-import { ClientPileItem, updatePileItem, deletePileItem } from '../actions';
+import { ClientPileItem, updatePileItem, deletePileItem } from '../../actions';
 import missingArt from './missingArt.svg';
 import styles from './PileItem.module.scss';
 
@@ -11,8 +14,23 @@ type PileItemProps = {
 };
 
 export default function PileItem({ item }: PileItemProps) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    active,
+  } = useSortable({ id: item.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    cursor: active ? 'grabbing' : 'grab',
+  };
+
   return (
-    <li className={styles.item}>
+    <li className={styles.item} ref={setNodeRef} style={style} {...attributes} {...listeners}>
       <img
         src={item.coverImageUrl}
         alt={`Album art for ${item.albumName}`}

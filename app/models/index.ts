@@ -10,6 +10,7 @@ export const dbSource = async () => {
   }
 
   return {
+    dataSource,
     pileItemRepo: dataSource.getRepository(PileItem),
   }
 }

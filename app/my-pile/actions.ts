@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { MusicBrainzApi, IReleaseGroupList } from 'musicbrainz-api';
 import { DiscogsClient } from '@lionralfs/discogs-client';
 import { FindManyOptions, ILike, Any } from 'typeorm';
+import { SortableContract } from '@/app/api/types';
 import { dbSource, PileItem } from '@/app/models';
 import { PileItemStatus } from '@/app/models/PileItemTypes';
 
@@ -22,7 +23,8 @@ type PileItemSearchFilters = {
   filters?: {
     owned?: boolean;
     status?: PileItemStatus[];
-  }
+  };
+  sort?: SortableContract<PileItem, 'artistName' | 'albumName' | 'addedAt' | 'listenedAt' | 'didNotFinishAt'>;
 };
 
 export async function getPileItems(
@@ -30,7 +32,11 @@ export async function getPileItems(
 ): Promise<ClientPileItem[]> {
   const con = await dbSource();
 
-  const query = {} as FindManyOptions<PileItem>;
+  const query = {
+    order: {
+      orderIndex: 'DESC',
+    },
+  } as FindManyOptions<PileItem>;
   if (searchFilters.searchQuery) {
     query.where = [
       { artistName: ILike(`%${searchFilters.searchQuery}%`) },
@@ -107,13 +113,53 @@ export async function createPileItem(pileItem: {
 }
 
 export async function updatePileItem(
-  id: string,
+  id: PileItem['id'],
   payload: Partial<Pick<PileItem, 'status' | 'owned' | 'notes'>>
 ) {
   const con = await dbSource();
 
   // TODO: Validation
   await con.pileItemRepo.update({ id }, payload);
+  revalidatePath('/my-pile');
+}
+
+export async function reorderPileItem(id: PileItem['id'], newPosition: number) {
+  const con = await dbSource();
+
+  await con.dataSource.transaction(async manager => {
+    const item = await manager.findOne(PileItem, { where: { id } });
+    if (!item) {
+      notFound();
+      return;
+    }
+    const oldPosition = item.orderIndex;
+
+    if (newPosition > oldPosition) {
+      // Moving down: decrement order of items between old and new position
+      await manager
+        .createQueryBuilder()
+        .update(PileItem)
+        .set({ orderIndex: () => 'orderIndex - 1' })
+        .where('orderIndex > :oldPos AND orderIndex <= :newPos', {
+          oldPos: oldPosition,
+          newPos: newPosition
+        })
+        .execute();
+    } else {
+      // Moving up: increment order of items between new and old position
+      await manager
+        .createQueryBuilder()
+        .update(PileItem)
+        .set({ orderIndex: () => 'orderIndex + 1' })
+        .where('orderIndex >= :newPos AND orderIndex < :oldPos', {
+          newPos: newPosition,
+          oldPos: oldPosition
+        })
+        .execute();
+    }
+
+    await manager.update(PileItem, id, { orderIndex: newPosition });
+  });
   revalidatePath('/my-pile');
 }
 
