@@ -36,9 +36,10 @@ export default function PileItems({ pileItems }: PileItemsProps) {
     const { active, over } = event;
 
     if (active && over?.data?.current && active.id !== over.id) {
-      reorderPileItem(active.id as string, over.data.current.sortable.index);
+      const target = pileItems.find((item) => item.id === over.id);
+      reorderPileItem(active.id as string, target!.orderIndex);
     }
-  }, [itemIds]);
+  }, [itemIds, pileItems]);
 
   return (
     <DndContext

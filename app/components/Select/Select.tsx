@@ -27,6 +27,7 @@ import styles from './Select.module.scss';
 interface SelectProps {
   children: ReactElement<OptionHTMLAttributes<HTMLOptionElement>>[];
   disabled?: boolean;
+  id?: string;
   onChange: (value: OptionHTMLAttributes<HTMLOptionElement>['value']) => void;
   value: string;
 };
@@ -50,6 +51,7 @@ const optionVariants = cva(styles.option, {
 export default function Select({
   children,
   disabled = false,
+  id,
   onChange,
   value,
 }: SelectProps) {
@@ -84,6 +86,7 @@ export default function Select({
     <>
       <div
         {...getReferenceProps()}
+        id={id}
         role="listbox"
         aria-readonly={disabled}
         className={selectVariants({ disabled })}
@@ -107,7 +110,11 @@ export default function Select({
               <li
                 role="option"
                 className={optionVariants({ selected: child.props.value === value })}
-                onClick={() => onChange(child.props.value)}
+                onClick={(event) => {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  onChange(child.props.value);
+                }}
               >
                 {child.props.children}
               </li>

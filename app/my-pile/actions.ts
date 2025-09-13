@@ -24,7 +24,7 @@ type PileItemSearchFilters = {
     owned?: boolean;
     status?: PileItemStatus[];
   };
-  sort?: SortableContract<PileItem, 'artistName' | 'albumName' | 'addedAt' | 'listenedAt' | 'didNotFinishAt'>;
+  sort?: SortableContract<PileItem, 'orderIndex' | 'artistName' | 'albumName' | 'addedAt' | 'listenedAt' | 'didNotFinishAt'>;
 };
 
 export async function getPileItems(
@@ -32,9 +32,14 @@ export async function getPileItems(
 ): Promise<ClientPileItem[]> {
   const con = await dbSource();
 
+  const { field: sortField, order: sortOrder } = searchFilters?.sort ?? {
+    field: 'orderIndex',
+    order: 'DESC',
+  };
+
   const query = {
     order: {
-      orderIndex: 'DESC',
+      [sortField]: sortOrder,
     },
   } as FindManyOptions<PileItem>;
   if (searchFilters.searchQuery) {

@@ -4,6 +4,7 @@ import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 import { cva } from 'class-variance-authority';
 import { PileItemStatus, PileItemStatusLabels } from '@/app/models/PileItemTypes';
 import SearchInput from '@/app/components/SearchInput';
+import Select from '@/app/components/Select';
 import useDebounce from '@/app/util/useDebounce';
 import styles from './FilterBar.module.scss';
 
@@ -16,7 +17,7 @@ const filterCva = cva(styles.filter, {
 });
 
 type FilterState = {
-  status: Record<PileItemStatus, boolean>;
+  status: PileItemStatus;
 };
 
 export default function FilterBar() {
@@ -25,30 +26,36 @@ export default function FilterBar() {
   const { replace } = useRouter();
 
   const paramsFilters = JSON.parse(searchParams.get('filters') ?? '{}');
-  const initStatusFilter = paramsFilters?.status ?? [PileItemStatus.QUEUED];
+  const initStatusFilter = (paramsFilters?.status ?? [PileItemStatus.QUEUED])[0];
 
   const [filters, setFilters] = useState<FilterState>({
-    status: {
-      [PileItemStatus.QUEUED]: initStatusFilter.includes(PileItemStatus.QUEUED),
-      [PileItemStatus.LISTENED]: initStatusFilter.includes(PileItemStatus.LISTENED),
-      [PileItemStatus.DID_NOT_FINISH]: initStatusFilter.includes(PileItemStatus.DID_NOT_FINISH),
-    },
+    status: initStatusFilter,
   });
+
   const [searchQuery, setSearchQuery] = useState<string>('');
   const debouncedSearchQuery = useDebounce(searchQuery, 250);
+
+  const [sortField, setSortField] = useState<string>('orderIndex');
+  const [sortDirection, setSortDirection] = useState<'ASC' | 'DESC'>('DESC');
 
   useEffect(() => {
     const params = new URLSearchParams(searchParams);
 
     const serializedFilters = {
-      status: (Object.keys(filters.status) as PileItemStatus[]).reduce((acc, statusKey) => {
-        if (filters.status[statusKey ]) {
-          return [...acc, statusKey];
-        }
-        return acc;
-      }, [] as PileItemStatus[]),
+      status: [filters.status],
     };
     params.set('filters', JSON.stringify(serializedFilters));
+
+    if (filters.status === PileItemStatus.QUEUED) {
+      params.set('sortField', sortField);
+      params.set('sortDirection', sortDirection);
+    } else if (filters.status === PileItemStatus.LISTENED) {
+      params.set('sortField', 'listenedAt');
+      params.set('sortDirection', 'DESC');
+    } else if (filters.status === PileItemStatus.DID_NOT_FINISH) {
+      params.set('sortField', 'didNotFinishAt');
+      params.set('sortDirection', 'DESC');
+    }
 
     if (searchQuery) {
       params.set('query', searchQuery);
@@ -57,66 +64,77 @@ export default function FilterBar() {
     }
 
     replace(`${pathname}?${params.toString()}`);
-  }, [debouncedSearchQuery, filters, pathname]);
+  }, [debouncedSearchQuery, filters, sortField, sortDirection, pathname]);
 
   return (
     <div className={styles.filterBar}>
-      <SearchInput
-        isLoading={debouncedSearchQuery !== searchQuery}
-        onChange={(event) => setSearchQuery(event.target.value)}
-        onClear={() => setSearchQuery('')}
-        value={searchQuery}
-      />
-      <div className={styles.statusFilter}>
+      <div className={styles.searchContainer}>
+        <SearchInput
+          isLoading={debouncedSearchQuery !== searchQuery}
+          onChange={(event) => setSearchQuery(event.target.value)}
+          onClear={() => setSearchQuery('')}
+          value={searchQuery}
+        />
+      </div>
+      <div className={styles.statusFilters}>
         <button
           role="switch"
-          aria-checked={filters.status[PileItemStatus.QUEUED]}
-          className={filterCva({ selected: filters.status[PileItemStatus.QUEUED] })}
+          aria-checked={filters.status === PileItemStatus.QUEUED}
+          className={filterCva({ selected: filters.status === PileItemStatus.QUEUED })}
           onClick={() => setFilters((s) => ({
             ...s,
-            status: {
-              ...s.status,
-              [PileItemStatus.QUEUED]: !s.status[PileItemStatus.QUEUED],
-              [PileItemStatus.LISTENED]: false,
-              [PileItemStatus.DID_NOT_FINISH]: false,
-            },
+            status: PileItemStatus.QUEUED,
           }))}
         >
           {PileItemStatusLabels[PileItemStatus.QUEUED]}
         </button>
         <button
           role="switch"
-          aria-checked={filters.status[PileItemStatus.LISTENED]}
-          className={filterCva({ selected: filters.status[PileItemStatus.LISTENED] })}
+          aria-checked={filters.status === PileItemStatus.LISTENED}
+          className={filterCva({ selected: filters.status === PileItemStatus.LISTENED })}
           onClick={() => setFilters((s) => ({
             ...s,
-            status: {
-              ...s.status,
-              [PileItemStatus.QUEUED]: false,
-              [PileItemStatus.LISTENED]: !s.status[PileItemStatus.LISTENED],
-              [PileItemStatus.DID_NOT_FINISH]: false,
-            },
+            status: PileItemStatus.LISTENED,
           }))}
         >
           {PileItemStatusLabels[PileItemStatus.LISTENED]}
         </button>
         <button
           role="switch"
-          aria-checked={filters.status[PileItemStatus.DID_NOT_FINISH]}
-          className={filterCva({ selected: filters.status[PileItemStatus.DID_NOT_FINISH] })}
+          aria-checked={filters.status === PileItemStatus.DID_NOT_FINISH}
+          className={filterCva({ selected: filters.status === PileItemStatus.DID_NOT_FINISH })}
           onClick={() => setFilters((s) => ({
             ...s,
-            status: {
-              ...s.status,
-              [PileItemStatus.QUEUED]: false,
-              [PileItemStatus.LISTENED]: false,
-              [PileItemStatus.DID_NOT_FINISH]: !s.status[PileItemStatus.DID_NOT_FINISH],
-            },
+            status: PileItemStatus.DID_NOT_FINISH,
           }))}
         >
           {PileItemStatusLabels[PileItemStatus.DID_NOT_FINISH]}
         </button>
       </div>
+      {filters.status === PileItemStatus.QUEUED && (
+        <div className={styles.sorting}>
+          <label htmlFor="sortBySelect">
+            Sort By:
+          </label>
+          <Select
+            id="sortBySelect"
+            onChange={(value) => setSortField(value as string)}
+            value={sortField}
+          >
+            <option value="orderIndex">My Order</option>
+            <option value="artistName">Artist Name</option>
+            <option value="albumName">Album Name</option>
+            <option value="addedAt">Added At</option>
+          </Select>
+          <Select
+            onChange={(value) => setSortDirection(value as ('ASC' | 'DESC'))}
+            value={sortDirection}
+          >
+            <option value="ASC">Ascending</option>
+            <option value="DESC">Descending</option>
+          </Select>
+        </div>
+      )}
     </div>
   );
 }

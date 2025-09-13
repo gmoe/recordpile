@@ -30,8 +30,9 @@ export default function PileItem({ item }: PileItemProps) {
   };
 
   return (
-    <li className={styles.item} ref={setNodeRef} style={style} {...attributes} {...listeners}>
+    <li className={styles.item} ref={setNodeRef} style={style} {...attributes} >
       <img
+        {...listeners}
         src={item.coverImageUrl}
         alt={`Album art for ${item.albumName}`}
         loading="lazy"
@@ -39,7 +40,7 @@ export default function PileItem({ item }: PileItemProps) {
           (event.target as HTMLImageElement).src = missingArt.src;
         }}
       />
-      <div className={styles.albumInfo}>
+      <div className={styles.albumInfo} {...listeners}>
         <span className={styles.artist}>{item.artistName}</span>
         <span className={styles.album}>{item.albumName}</span>
       </div>

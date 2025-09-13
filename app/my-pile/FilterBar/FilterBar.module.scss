@@ -1,33 +1,53 @@
 .filterBar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  display: grid;
+  grid-template-areas:
+    'search statusFilters'
+    '_ sorting';
+  grid-template-columns: 1fr 1fr;
+  justify-items: space-between;
   row-gap: 8px;
   column-gap: 32px;
 
-  .filter {
-    margin: 0;
-    background: var(--background);
-    color: var(--foreground);
-    border-right: 0;
+  .searchContainer {
+    grid-area: search;
+  };
 
-    &:last-child {
-      border-right: 1px solid var(--foreground);
-    }
+  .statusFilters {
+    grid-area: statusFilters;
+    justify-self: end;
 
-    &:active {
-      border-width: 1px;
-    }
+    .filter {
+      margin: 0;
+      background: var(--background);
+      color: var(--foreground);
+      border-right: 0;
 
-    &.selected {
-      background: var(--foreground);
-      color: var(--background);
+      &:last-child {
+        border-right: 1px solid var(--foreground);
+      }
+
+      &:active {
+        border-width: 1px;
+      }
+
+      &.selected {
+        background: var(--foreground);
+        color: var(--background);
+      }
     }
+  }
+
+  .sorting {
+    grid-area: sorting;
+    display: inline-flex;
+    align-items: center;
+    justify-self: end;
+    gap: 8px;
   }
 }
 
 @media (width <= 650px) {
   .filterBar {
-    flex-direction: column;
+    grid-template-columns: 1fr;
   }
 }
