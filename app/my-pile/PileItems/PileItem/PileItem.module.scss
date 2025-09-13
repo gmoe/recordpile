@@ -33,3 +33,12 @@
     gap: 4px;
   }
 }
+
+@media (width <= 600px) {
+  .item {
+    grid-template-areas:
+    'cover controls'
+    'info info';
+    grid-template-columns: 1fr 1fr;
+  }
+}

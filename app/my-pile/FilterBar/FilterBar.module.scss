@@ -48,6 +48,16 @@
 
 @media (width <= 650px) {
   .filterBar {
+    grid-template-areas: 'search' 'statusFilters' 'sorting';
     grid-template-columns: 1fr;
+    justify-items: center;
+
+    .statusFilters {
+      justify-self: center;
+    }
+
+    .sorting {
+      justify-self: center;
+    }
   }
 }
