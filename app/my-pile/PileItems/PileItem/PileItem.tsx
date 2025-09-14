@@ -1,5 +1,7 @@
 'use client';
 import { format } from 'date-fns';
+import { ChevronDown, ChevronUp } from 'lucide-react';
+import { cva } from 'class-variance-authority';
 
 import { PileItemStatus, PileItemStatusLabels } from '@/app/models/PileItemTypes';
 import Select from '@/app/components/Select';
@@ -14,11 +16,46 @@ import styles from './PileItem.module.scss';
 
 type PileItemProps = {
   item: ClientPileItem;
+  index: number;
+  nextOrderIndex: number | null;
+  previousOrderIndex: number | null;
 };
 
-export default function PileItem({ item }: PileItemProps) {
+const itemStyles = cva(styles.item, {
+  variants: {
+    hideReorder: {
+      true: styles.hideReorder,
+    },
+  },
+});
+
+export default function PileItem({
+  item,
+  index,
+  nextOrderIndex,
+  previousOrderIndex,
+}: PileItemProps) {
+  const hideReorder = nextOrderIndex === null && previousOrderIndex === null;
+
   return (
-    <li className={styles.item}>
+    <li className={itemStyles({ hideReorder })}>
+      {!hideReorder && (
+        <div className={styles.index}>
+          <button
+            disabled={previousOrderIndex === null}
+            onClick={() => reorderPileItem(item.id, previousOrderIndex as number)}
+          >
+            <ChevronUp size={16} />
+          </button>
+          <span>{index + 1}</span>
+          <button
+            disabled={nextOrderIndex === null}
+            onClick={() => reorderPileItem(item.id, nextOrderIndex as number)}
+          >
+            <ChevronDown size={16} />
+          </button>
+        </div>
+      )}
       <img
         src={item.coverImageUrl}
         alt={`Album art for ${item.albumName}`}

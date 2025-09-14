@@ -1,12 +1,28 @@
 .item {
   display: grid;
   padding: 16px;
-  grid-template-areas: 'cover info controls';
-  grid-template-columns: min-content 1fr 1fr;
+  grid-template-areas: 'index cover info controls';
+  grid-template-columns: min-content min-content 1fr 1fr;
   align-items: center;
   gap: 16px;
   border: 1px solid var(--foreground);
   border-radius: 4px;
+
+  &.hideReorder {
+    grid-template-areas: 'cover info controls';
+    grid-template-columns: min-content 1fr 1fr;
+  }
+
+  .index {
+    grid-area: index;
+    display: grid;
+    align-content: center;
+    justify-items: center;
+
+    button {
+      padding: 4px;
+    }
+  }
 
   img {
     grid-area: cover;
@@ -37,8 +53,15 @@
 @media (width <= 600px) {
   .item {
     grid-template-areas:
-    'cover controls'
-    'info info';
-    grid-template-columns: 1fr 1fr;
+    'index cover controls'
+    '_ info info';
+    grid-template-columns: min-content 1fr 1fr;
+
+    &.hideReorder {
+      grid-template-areas:
+      'cover controls'
+      'info info';
+      grid-template-columns: 1fr 1fr;
+    }
   }
 }
