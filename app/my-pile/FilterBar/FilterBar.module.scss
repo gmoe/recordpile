@@ -2,7 +2,7 @@
   display: grid;
   grid-template-areas:
     'search statusFilters'
-    '_ sorting';
+    'addTo sorting';
   grid-template-columns: 1fr 1fr;
   justify-items: space-between;
   row-gap: 8px;
@@ -35,6 +35,10 @@
         color: var(--background);
       }
     }
+  }
+
+  .addTo {
+    grid-area: addTo;
   }
 
   .sorting {

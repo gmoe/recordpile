@@ -14,7 +14,7 @@ import {
   DialogClose,
 } from '@/app/components/Dialog';
 import SearchInput from '@/app/components/SearchInput';
-import { createPileItem, searchForNewItems } from '../actions';
+import { createPileItem, searchForNewItems } from '../../actions';
 import styles from './AddToPile.module.scss';
 
 export default function AddToPile() {

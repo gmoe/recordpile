@@ -6,6 +6,7 @@ import { PileItemStatus, PileItemStatusLabels } from '@/app/models/PileItemTypes
 import SearchInput from '@/app/components/SearchInput';
 import Select from '@/app/components/Select';
 import useDebounce from '@/app/util/useDebounce';
+import AddToPile from './AddToPile';
 import styles from './FilterBar.module.scss';
 
 const filterCva = cva(styles.filter, {
@@ -110,6 +111,9 @@ export default function FilterBar() {
         >
           {PileItemStatusLabels[PileItemStatus.DID_NOT_FINISH]}
         </button>
+      </div>
+      <div className={styles.addTo}>
+        <AddToPile />
       </div>
       {filters.status === PileItemStatus.QUEUED && (
         <div className={styles.sorting}>

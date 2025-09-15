@@ -1,0 +1,13 @@
+.main {
+  margin: 0 auto;
+  max-width: 800px;
+}
+
+.header {
+  display: flex;
+  padding-top: 16px;
+  padding-bottom: 8px;
+  gap: 16px;
+  justify-content: space-between;
+  align-items: center;
+}

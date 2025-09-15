@@ -12,7 +12,7 @@ interface PileItemsProps {
 
 export default function PileItems({ pileItems }: PileItemsProps) {
   const searchParams = useSearchParams();
-  const filters = JSON.parse(searchParams.get('filters') ?? '');
+  const filters = JSON.parse(searchParams.get('filters') ?? '{}');
 
   const isShowingQueuedItems = filters.status?.includes(PileItemStatus.QUEUED) ?? false;
 

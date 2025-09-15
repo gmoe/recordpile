@@ -1,21 +1,24 @@
-import type { Metadata } from "next";
-import { Rubik, Space_Mono } from "next/font/google";
-import "./globals.css";
+import type { Metadata } from 'next';
+import { Rubik, Space_Mono } from 'next/font/google';
+import './globals.css';
+import NavLinks from './NavLinks';
+import logo from './logo.svg';
+import styles from './layout.module.scss';
 
 const rubikSans = Rubik({
-  variable: "--font-rubik-sans",
-  subsets: ["latin"],
+  variable: '--font-rubik-sans',
+  subsets: ['latin'],
 });
 
 const spaceMono = Space_Mono({
-  variable: "--font-space-mono",
+  variable: '--font-space-mono',
   weight: '400',
-  subsets: ["latin"],
+  subsets: ['latin'],
 });
 
 export const metadata: Metadata = {
-  title: "RecordPile",
-  description: "The \"to be read\" pile for your music",
+  title: 'RecordPile',
+  description: 'The "to be read" pile for your music',
 };
 
 export default function RootLayout({
@@ -25,8 +28,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${rubikSans.variable} ${spaceMono.variable}`}>
-        {children}
+      <body className={`${styles.main} ${rubikSans.variable} ${spaceMono.variable}`}>
+        <header className={styles.header}>
+          <img src={logo.src} alt="RecordPile logo" />
+          <NavLinks />
+        </header>
+        <main>
+          {children}
+        </main>
       </body>
     </html>
   );

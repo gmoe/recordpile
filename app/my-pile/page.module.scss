@@ -1,14 +1,5 @@
-.main {
+.pileContent {
   display: grid;
-  padding: 16px;
-  justify-content: center;
-  grid-template-columns: minmax(1fr, 1000px);
+  margin-top: 16px;
   grid-gap: 16px;
-
-  .header {
-    display: flex;
-    gap: 16px;
-    justify-content: space-between;
-    align-items: center;
-  }
 }
