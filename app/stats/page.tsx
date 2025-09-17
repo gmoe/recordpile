@@ -1,7 +1,11 @@
+'use server';
+import AverageDaysCompletion from './charts/AverageDaysCompletion';
+import styles from './page.module.scss';
+
 export default async function Stats() {
   return (
-    <div>
-      Charts will go here
+    <div className={styles.charts}>
+      <AverageDaysCompletion />
     </div>
   );
 }

@@ -1,0 +1,12 @@
+.average {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+
+  .data {
+    font-size: 2.5rem;
+    font-weight: 600px;
+  }
+}
