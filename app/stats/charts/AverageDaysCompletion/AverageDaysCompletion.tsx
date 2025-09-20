@@ -1,5 +1,5 @@
 'use server';
-import { getAverageTimeToListen } from '../../actions';
+import { getAverageTimeToListen } from '../actions';
 import chartStyles from '../charts.module.scss';
 import styles from './AverageDaysCompletion.module.scss';
 
