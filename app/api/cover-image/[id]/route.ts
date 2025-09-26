@@ -1,7 +1,7 @@
 'use server';
 import { NextResponse, NextRequest } from 'next/server';
 import { notFound } from 'next/navigation';
-import { dbSource, PileItem } from '@/app/models';
+import { dbSource, PileItem } from '@/app/db';
 
 export async function GET(_req: NextRequest, ctx: RouteContext<'/api/cover-image/[id]'>) {
   const { id } = await ctx.params;

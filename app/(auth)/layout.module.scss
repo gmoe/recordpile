@@ -1,0 +1,15 @@
+.container {
+  display: grid;
+  height: 100vh;
+  align-content: center;
+  justify-content: center;
+
+  .header {
+    display: flex;
+    margin-bottom: 32px;
+
+    img {
+      flex-grow: 1;
+    }
+  }
+}

@@ -1,8 +1,6 @@
 import type { Metadata } from 'next';
 import { Rubik, Space_Mono } from 'next/font/google';
 import './globals.css';
-import NavLinks from './NavLinks';
-import logo from './logo.svg';
 import styles from './layout.module.scss';
 
 const rubikSans = Rubik({
@@ -29,13 +27,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${styles.main} ${rubikSans.variable} ${spaceMono.variable}`}>
-        <header className={styles.header}>
-          <img src={logo.src} alt="RecordPile logo" />
-          <NavLinks />
-        </header>
-        <main>
-          {children}
-        </main>
+        {children}
       </body>
     </html>
   );

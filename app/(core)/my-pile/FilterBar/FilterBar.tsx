@@ -2,7 +2,8 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 import { cva } from 'class-variance-authority';
-import { PileItemStatus, PileItemStatusLabels } from '@/app/models/PileItemTypes';
+
+import { PileItemStatus, PileItemStatusLabels } from '@/app/db/entities/PileItemTypes';
 import SearchInput from '@/app/components/SearchInput';
 import Select from '@/app/components/Select';
 import useDebounce from '@/app/util/useDebounce';

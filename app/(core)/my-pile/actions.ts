@@ -4,9 +4,9 @@ import { notFound } from 'next/navigation';
 import { MusicBrainzApi, IReleaseGroupList } from 'musicbrainz-api';
 import { DiscogsClient } from '@lionralfs/discogs-client';
 import { FindManyOptions, ILike, Any } from 'typeorm';
+
 import { SortableContract } from '@/app/api/types';
-import { dbSource, PileItem } from '@/app/models';
-import { PileItemStatus } from '@/app/models/PileItemTypes';
+import { dbSource, PileItem, PileItemStatus } from '@/app/db';
 
 const mbApi = new MusicBrainzApi({
   appName: 'record-pile',

@@ -1,5 +1,7 @@
 'use server';
-import { dbSource } from '@/app/models';
+
+import { dbSource } from '@/app/db';
+import { getSessionOrRedirect } from '@/app/lib/auth';
 import { getPileItems, createPileItem } from './actions';
 import FilterBar from './FilterBar';
 import PileItems from './PileItems';
@@ -16,6 +18,7 @@ export default async function MyPilePage(props: {
     page?: string;
   }>;
 }) {
+  await getSessionOrRedirect();
   const searchParams = await props.searchParams ?? {};
   const pileItems = await getPileItems({
     searchQuery: searchParams.query,

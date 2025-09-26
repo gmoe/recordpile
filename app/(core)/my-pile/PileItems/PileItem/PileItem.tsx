@@ -3,7 +3,7 @@ import { format } from 'date-fns';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { cva } from 'class-variance-authority';
 
-import { PileItemStatus, PileItemStatusLabels } from '@/app/models/PileItemTypes';
+import { PileItemStatus, PileItemStatusLabels } from '@/app/db/entities/PileItemTypes';
 import Select from '@/app/components/Select';
 import {
   ClientPileItem,

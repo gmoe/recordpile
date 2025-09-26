@@ -16,6 +16,10 @@ const linkCva = cva(styles.link, {
 export default function NavLinks() {
   const pathname = usePathname();
 
+  if (!pathname.startsWith('/my-pile') && !pathname.startsWith('/stats')) {
+    return null;
+  }
+
   return (
     <nav>
       <ul className={styles.links}>

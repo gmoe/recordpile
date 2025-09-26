@@ -8,8 +8,7 @@ import {
 } from 'date-fns';
 import { Between } from 'typeorm';
 
-import { dbSource, PileItem } from '@/app/models';
-import { PileItemStatus } from '@/app/models/PileItemTypes';
+import { dbSource, PileItem, PileItemStatus } from '@/app/db';
 
 /*
  * TODO: Stats ideas

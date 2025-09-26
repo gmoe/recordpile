@@ -44,7 +44,7 @@ a {
 }
 
 input {
-  margin: 1px;
+  padding: 8px;
   background: var(--background);
   color: var(--foreground);
   font-size: 1rem;
@@ -52,9 +52,22 @@ input {
 }
 
 input:focus {
-  margin: 0;
-  border-width: 2px;
-  outline: 0;
+  outline: 1px solid var(--foreground);
+}
+
+input:disabled {
+  background: var(--gray);
+  cursor: not-allowed;
+}
+
+label {
+  font-weight: 600;
+}
+
+fieldset {
+  display: inline-grid;
+  gap: 4px;
+  border: 0;
 }
 
 button {
