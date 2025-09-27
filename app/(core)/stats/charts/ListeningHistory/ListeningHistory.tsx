@@ -7,16 +7,6 @@ import { type AlbumsHeardHistory } from '../actions';
 import chartStyles from '../charts.module.scss';
 import styles from './ListeningHistory.module.scss';
 
-const data = [
-  { year: 2010, count: 10 },
-  { year: 2011, count: 20 },
-  { year: 2012, count: 15 },
-  { year: 2013, count: 25 },
-  { year: 2014, count: 22 },
-  { year: 2015, count: 30 },
-  { year: 2016, count: 28 },
-];
-
 type ListeningHistoryProps = {
   albumHistory: Promise<AlbumsHeardHistory[]>;
 };
@@ -27,7 +17,7 @@ export default function ListeningHistory({ albumHistory }: ListeningHistoryProps
   const chartRef = useRef<Chart<'bar', string[], string> | null>(null);
 
   useEffect(() => {
-    if (!chartElRef.current) return;
+    if (!chartElRef.current || !chartData) return;
 
     // Next.js does not support ICSS
     const rootStyles = getComputedStyle(document.documentElement);
@@ -38,7 +28,7 @@ export default function ListeningHistory({ albumHistory }: ListeningHistoryProps
       {
         type: 'bar',
         data: {
-          labels: chartData.map(row => format(row.listenedDay, 'MMMM d')),
+          labels: chartData.map(row => format(row.finishedDay, 'MMMM d')),
             datasets: [
             {
               label: 'Listens this month',
@@ -53,7 +43,7 @@ export default function ListeningHistory({ albumHistory }: ListeningHistoryProps
     return () => {
       chartRef.current?.destroy();
     };
-  }, [chartElRef]);
+  }, [chartElRef, chartData]);
 
   return (
     <div className={`${chartStyles.container} ${styles.chartContainer}`}>

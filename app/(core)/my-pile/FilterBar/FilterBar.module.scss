@@ -30,9 +30,14 @@
         border-width: 1px;
       }
 
+      &:hover {
+        text-decoration: underline;
+      }
+
       &.selected {
         background: var(--foreground);
         color: var(--background);
+        text-decoration: none;
       }
     }
   }

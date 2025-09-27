@@ -45,7 +45,7 @@ export const DialogTrigger = forwardRef<
   HTMLProps<HTMLElement> & DialogTriggerProps
 >(function DialogTrigger({ children, ...props }, propRef) {
   const context = useDialogContext();
-  const childrenRef = (children as any).ref;
+  const childrenRef = (children as any).ref; // eslint-disable-line @typescript-eslint/no-explicit-any -- TODO
   const ref = useMergeRefs([context.refs.setReference, propRef, childrenRef]);
 
   return (

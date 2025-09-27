@@ -7,6 +7,8 @@ import styles from './page.module.scss';
 export default function Register() {
   const [loginState, handleLogIn, isLoggingIn] = useActionState(register, undefined);
 
+  console.log('loginState', loginState);
+
   return (
     <div>
       <form className={styles.loginForm}>

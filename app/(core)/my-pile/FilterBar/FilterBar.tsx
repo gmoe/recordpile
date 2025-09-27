@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 import { cva } from 'class-variance-authority';
 
-import { PileItemStatus, PileItemStatusLabels } from '@/app/db/entities/PileItemTypes';
+import { PileItemStatus, PileItemStatusLabels } from '@/app/db/schemas/pileItems';
 import SearchInput from '@/app/components/SearchInput';
 import Select from '@/app/components/Select';
 import useDebounce from '@/app/util/useDebounce';
@@ -51,22 +51,22 @@ export default function FilterBar() {
     if (filters.status === PileItemStatus.QUEUED) {
       params.set('sortField', sortField);
       params.set('sortDirection', sortDirection);
-    } else if (filters.status === PileItemStatus.LISTENED) {
-      params.set('sortField', 'listenedAt');
+    } else if (filters.status === PileItemStatus.FINISHED) {
+      params.set('sortField', 'finishedAt');
       params.set('sortDirection', 'DESC');
     } else if (filters.status === PileItemStatus.DID_NOT_FINISH) {
       params.set('sortField', 'didNotFinishAt');
       params.set('sortDirection', 'DESC');
     }
 
-    if (searchQuery) {
-      params.set('query', searchQuery);
+    if (debouncedSearchQuery) {
+      params.set('query', debouncedSearchQuery as string);
     } else {
       params.delete('query');
     }
 
     replace(`${pathname}?${params.toString()}`);
-  }, [debouncedSearchQuery, filters, sortField, sortDirection, pathname]);
+  }, [debouncedSearchQuery, filters, sortField, sortDirection, pathname, replace, searchParams]);
 
   return (
     <div className={styles.filterBar}>
@@ -92,14 +92,14 @@ export default function FilterBar() {
         </button>
         <button
           role="switch"
-          aria-checked={filters.status === PileItemStatus.LISTENED}
-          className={filterCva({ selected: filters.status === PileItemStatus.LISTENED })}
+          aria-checked={filters.status === PileItemStatus.FINISHED}
+          className={filterCva({ selected: filters.status === PileItemStatus.FINISHED })}
           onClick={() => setFilters((s) => ({
             ...s,
-            status: PileItemStatus.LISTENED,
+            status: PileItemStatus.FINISHED,
           }))}
         >
-          {PileItemStatusLabels[PileItemStatus.LISTENED]}
+          {PileItemStatusLabels[PileItemStatus.FINISHED]}
         </button>
         <button
           role="switch"

@@ -1,0 +1,1 @@
+ALTER TABLE "pileItems" ALTER COLUMN "status" SET DEFAULT 'queued';

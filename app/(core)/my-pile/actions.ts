@@ -3,10 +3,16 @@ import { revalidatePath } from 'next/cache';
 import { notFound } from 'next/navigation';
 import { MusicBrainzApi, IReleaseGroupList } from 'musicbrainz-api';
 import { DiscogsClient } from '@lionralfs/discogs-client';
-import { FindManyOptions, ILike, Any } from 'typeorm';
+import { asc, desc, eq, ilike, and, or, inArray, gt, lte, gte, lt, sql } from 'drizzle-orm';
 
 import { SortableContract } from '@/app/api/types';
-import { dbSource, PileItem, PileItemStatus } from '@/app/db';
+import { database } from '@/app/db';
+import {
+  pileItems,
+  PileItem,
+  PileItemInsert,
+  PileItemStatus,
+} from '@/app/db/schemas/pileItems';
 
 const mbApi = new MusicBrainzApi({
   appName: 'record-pile',
@@ -14,7 +20,7 @@ const mbApi = new MusicBrainzApi({
   appContactInfo: 'me@griffinmoe.com',
 });
 
-export type ClientPileItem = PileItem & {
+export type ClientPileItem = Omit<PileItem, 'coverImage'> & {
   coverImageUrl: string;
 };
 
@@ -24,45 +30,35 @@ type PileItemSearchFilters = {
     owned?: boolean;
     status?: PileItemStatus[];
   };
-  sort?: SortableContract<PileItem, 'orderIndex' | 'artistName' | 'albumName' | 'addedAt' | 'listenedAt' | 'didNotFinishAt'>;
+  sort?: SortableContract<PileItem, 'orderIndex' | 'artistName' | 'albumName' | 'addedAt' | 'finishedAt' | 'didNotFinishAt'>;
 };
 
 export async function getPileItems(
   searchFilters: PileItemSearchFilters = {},
 ): Promise<ClientPileItem[]> {
-  const con = await dbSource();
-
   const { field: sortField, order: sortOrder } = searchFilters?.sort ?? {
     field: 'orderIndex',
     order: 'DESC',
   };
 
-  const query = {
-    order: {
-      [sortField]: sortOrder,
+  const orderDir = sortOrder === 'ASC' ? asc : desc;
+  const items = await database.query.pileItems.findMany({
+    columns: {
+      coverImage: false,
     },
-  } as FindManyOptions<PileItem>;
-  if (searchFilters.searchQuery) {
-    query.where = [
-      { artistName: ILike(`%${searchFilters.searchQuery}%`) },
-      { albumName: ILike(`%${searchFilters.searchQuery}%`) },
-    ];
+    orderBy: [orderDir(pileItems[sortField])],
+    where: and(
+      ...(searchFilters.searchQuery ? [or(
+        ilike(pileItems.artistName, `%${searchFilters.searchQuery}%`),
+        ilike(pileItems.albumName, `%${searchFilters.searchQuery}%`),
+      )] : []),
+      ...(searchFilters.filters?.status ? [
+        inArray(pileItems.status, searchFilters.filters.status)
+      ] : []),
+    ),
+  });
 
-    if (searchFilters.filters?.status) {
-      query.where = query.where.map((part) => ({
-        ...part,
-        status: Any(searchFilters.filters?.status ?? []),
-      }));
-    }
-  } else if (searchFilters.filters?.status) {
-    query.where = {
-      status: Any(searchFilters.filters.status),
-    };
-  }
-
-  const pileItems = await con.pileItemRepo.find(query);
-
-  return pileItems.map((item) => ({
+  return items.map((item) => ({
     ...item,
     coverImageUrl: `/api/cover-image/${item.id}`,
   }));
@@ -97,7 +93,7 @@ export async function createPileItem(pileItem: {
   albumName: string,
   musicBrainzReleaseGroupId?: string,
 }) {
-  const item = new PileItem();
+  const item = {} as PileItemInsert;
 
   // TODO validation
   item.artistName = pileItem.artistName;
@@ -107,12 +103,12 @@ export async function createPileItem(pileItem: {
     const coverImageRes = await fetch(
       `https://coverartarchive.org/release-group/${pileItem.musicBrainzReleaseGroupId}/front-1200`
     );
-    const coverImage = await coverImageRes.bytes();
-    item.coverImage = await Buffer.from(coverImage);
+    const coverImage = await coverImageRes.arrayBuffer();
+    const b = await Buffer.from(coverImage);
+    item.coverImage = b;
   }
 
-  const con = await dbSource();
-  await con.pileItemRepo.save(item);
+  await database.insert(pileItems).values(item);
 
   revalidatePath('/my-pile');
 }
@@ -121,59 +117,107 @@ export async function updatePileItem(
   id: PileItem['id'],
   payload: Partial<Pick<PileItem, 'status' | 'owned' | 'notes'>>
 ) {
-  const con = await dbSource();
-
   // TODO: Validation
-  await con.pileItemRepo.update({ id }, payload);
+  await database.update(pileItems).set(payload).where(eq(pileItems.id, id));
   revalidatePath('/my-pile');
 }
 
-export async function reorderPileItem(id: PileItem['id'], newPosition: number) {
-  const con = await dbSource();
+// export async function reorderPileItem(id: PileItem['id'], newPosition: number) {
+  // const con = await dbSource();
 
-  await con.dataSource.transaction(async manager => {
-    const item = await manager.findOne(PileItem, { where: { id } });
+  // await con.dataSource.transaction(async manager => {
+  //   const item = await manager.findOne(PileItem, { where: { id } });
+  //   if (!item) {
+  //     notFound();
+  //     return;
+  //   }
+  //   const oldPosition = item.orderIndex;
+
+  //   if (newPosition > oldPosition) {
+  //     // Moving down: decrement order of items between old and new position
+  //     await manager
+  //       .createQueryBuilder()
+  //       .update(PileItem)
+  //       .set({ orderIndex: () => 'orderIndex - 1' })
+  //       .where('orderIndex > :oldPos AND orderIndex <= :newPos', {
+  //         oldPos: oldPosition,
+  //         newPos: newPosition
+  //       })
+  //       .execute();
+  //   } else {
+  //     // Moving up: increment order of items between new and old position
+  //     await manager
+  //       .createQueryBuilder()
+  //       .update(PileItem)
+  //       .set({ orderIndex: () => 'orderIndex + 1' })
+  //       .where('orderIndex >= :newPos AND orderIndex < :oldPos', {
+  //         newPos: newPosition,
+  //         oldPos: oldPosition
+  //       })
+  //       .execute();
+  //   }
+
+  //   await manager.update(PileItem, id, { orderIndex: newPosition });
+  // });
+  // revalidatePath('/my-pile');
+// }
+//
+
+export async function reorderPileItem(id: PileItem['id'], newPosition: number) {
+  await database.transaction(async (tx) => {
+    // Find the item
+    const [item] = await tx
+      .select()
+      .from(pileItems)
+      .where(eq(pileItems.id, id))
+      .limit(1);
+
     if (!item) {
       notFound();
       return;
     }
+
     const oldPosition = item.orderIndex;
 
     if (newPosition > oldPosition) {
       // Moving down: decrement order of items between old and new position
-      await manager
-        .createQueryBuilder()
-        .update(PileItem)
-        .set({ orderIndex: () => 'orderIndex - 1' })
-        .where('orderIndex > :oldPos AND orderIndex <= :newPos', {
-          oldPos: oldPosition,
-          newPos: newPosition
-        })
-        .execute();
+      await tx
+        .update(pileItems)
+        .set({ orderIndex: sql`${pileItems.orderIndex} - 1` })
+        .where(
+          and(
+            gt(pileItems.orderIndex, oldPosition),
+            lte(pileItems.orderIndex, newPosition)
+          )
+        );
     } else {
       // Moving up: increment order of items between new and old position
-      await manager
-        .createQueryBuilder()
-        .update(PileItem)
-        .set({ orderIndex: () => 'orderIndex + 1' })
-        .where('orderIndex >= :newPos AND orderIndex < :oldPos', {
-          newPos: newPosition,
-          oldPos: oldPosition
-        })
-        .execute();
+      await tx
+        .update(pileItems)
+        .set({ orderIndex: sql`${pileItems.orderIndex} + 1` })
+        .where(
+          and(
+            gte(pileItems.orderIndex, newPosition),
+            lt(pileItems.orderIndex, oldPosition)
+          )
+        );
     }
 
-    await manager.update(PileItem, id, { orderIndex: newPosition });
+    // Update the item's position
+    await tx
+      .update(pileItems)
+      .set({ orderIndex: newPosition })
+      .where(eq(pileItems.id, id));
   });
+
   revalidatePath('/my-pile');
 }
 
 export async function deletePileItem(id: string) {
-  const con = await dbSource();
-
   try {
-    await con.pileItemRepo.delete(id);
+    await database.delete(pileItems).where(eq(pileItems.id, id));
   } catch (error) {
+    console.error(error);
     return notFound();
   }
 

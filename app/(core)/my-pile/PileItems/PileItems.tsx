@@ -1,7 +1,7 @@
 'use client';
 import { useSearchParams } from 'next/navigation';
 
-import { PileItemStatus } from '@/app/db/entities/PileItemTypes';
+import { PileItemStatus } from '@/app/db/schemas/pileItems';
 import { ClientPileItem } from '../actions';
 import PileItem from './PileItem';
 import styles from './PileItems.module.scss';

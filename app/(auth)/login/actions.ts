@@ -1,12 +1,12 @@
 'use server';
 import { redirect } from 'next/navigation';
 
-import { dbSource } from '@/app/db';
+// import { dbSource } from '@/app/db';
 import { auth } from '@/app/lib/auth';
 
 // TODO: Validation
 export const logIn = async (formState: any, formData: FormData) => {
-  await dbSource();
+  // await dbSource();
 
   await auth.api.signInEmail({
     body: {

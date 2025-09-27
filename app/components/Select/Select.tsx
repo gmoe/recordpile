@@ -5,7 +5,6 @@ import {
   useMemo,
   Children,
   ReactElement,
-  SelectHTMLAttributes,
   OptionHTMLAttributes,
 } from 'react';
 import {
@@ -109,6 +108,7 @@ export default function Select({
             {Children.map(children, (child) => (
               <li
                 role="option"
+                aria-selected={child.props.value === value}
                 className={optionVariants({ selected: child.props.value === value })}
                 onClick={(event) => {
                   event.preventDefault();

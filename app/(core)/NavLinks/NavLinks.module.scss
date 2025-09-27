@@ -8,6 +8,11 @@
     &.active {
       background: var(--foreground);
       color: var(--background);
+      text-decoration: none;
+    }
+
+    &:hover {
+      text-decoration: underline;
     }
   }
 }

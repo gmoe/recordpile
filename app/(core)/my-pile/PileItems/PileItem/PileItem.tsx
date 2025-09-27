@@ -1,9 +1,10 @@
 'use client';
+import Image from 'next/image';
 import { format } from 'date-fns';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { cva } from 'class-variance-authority';
 
-import { PileItemStatus, PileItemStatusLabels } from '@/app/db/entities/PileItemTypes';
+import { PileItemStatus } from '@/app/db/schemas/pileItems';
 import Select from '@/app/components/Select';
 import {
   ClientPileItem,
@@ -56,10 +57,12 @@ export default function PileItem({
           </button>
         </div>
       )}
-      <img
+      <Image
         src={item.coverImageUrl}
         alt={`Album art for ${item.albumName}`}
         loading="lazy"
+        width={100}
+        height={100}
         onError={(event) => {
           (event.target as HTMLImageElement).src = missingArt.src;
         }}
@@ -70,12 +73,12 @@ export default function PileItem({
       </div>
       <div className={styles.controls}>
         {item.status === PileItemStatus.QUEUED && (
-          <span>Added: {format(item.addedAt, 'PP')}</span>
+          <span>Added: {format(item.addedAt ?? new Date(), 'PP')}</span>
         )}
-        {item.status === PileItemStatus.LISTENED && (
-          <span>Listened: {format(item.listenedAt, 'PP')}</span>
+        {item.status === PileItemStatus.FINISHED && item.finishedAt !== null && (
+          <span>Listened: {format(item.finishedAt, 'PP')}</span>
         )}
-        {item.status === PileItemStatus.DID_NOT_FINISH && (
+        {item.status === PileItemStatus.DID_NOT_FINISH && item.didNotFinishAt !== null && (
           <span>DNF: {format(item.didNotFinishAt, 'PP')}</span>
         )}
         <Select
@@ -83,7 +86,7 @@ export default function PileItem({
           value={item.status}
         >
           <option value={PileItemStatus.QUEUED}>Queued</option>
-          <option value={PileItemStatus.LISTENED}>Listened</option>
+          <option value={PileItemStatus.FINISHED}>Listened</option>
           <option value={PileItemStatus.DID_NOT_FINISH}>Did Not Finish</option>
         </Select>
         <button onClick={() => deletePileItem(item.id)}>

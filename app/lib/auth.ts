@@ -2,22 +2,32 @@ import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { betterAuth } from 'better-auth';
 import { nextCookies } from 'better-auth/next-js';
-import { typeormAdapter } from '@hedystia/better-auth-typeorm';
+import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 
-import dataSource from '@/app/db/dataSource';
-import { dbSource } from '@/app/db';
+import { database } from '@/app/db';
+import { user } from '@/app/db/schemas/user';
+import { account } from '@/app/db/schemas/account';
+import { verification } from '@/app/db/schemas/verification';
+import { session } from '@/app/db/schemas/session';
 
 export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
   },
-  database: typeormAdapter(dataSource),
+  database: drizzleAdapter(database, {
+    provider: 'pg',
+    schema: {
+      user,
+      account,
+      verification,
+      session,
+    },
+  }),
   plugins: [nextCookies()],
 });
 
 export const getSessionOrRedirect = async () => {
   'use server';
-  await dbSource();
   const session = await auth.api.getSession({
     headers: await headers(),
   });

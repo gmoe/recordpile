@@ -1,8 +1,7 @@
 'use server';
 
-import { dbSource } from '@/app/db';
 import { getSessionOrRedirect } from '@/app/lib/auth';
-import { getPileItems, createPileItem } from './actions';
+import { getPileItems } from './actions';
 import FilterBar from './FilterBar';
 import PileItems from './PileItems';
 import styles from './page.module.scss';

@@ -1,11 +1,11 @@
 'use server';
 import { redirect } from 'next/navigation';
-import { dbSource } from '@/app/db';
+// import { dbSource } from '@/app/db';
 import { auth } from '@/app/lib/auth';
 
 // TODO: Validation
-export const register = async (formState: any, formData: FormData) => {
-  await dbSource();
+export const register = async (formState: unknown, formData: FormData) => {
+  // await dbSource();
 
   try {
     await auth.api.signUpEmail({
@@ -19,5 +19,6 @@ export const register = async (formState: any, formData: FormData) => {
     redirect('/login');
   } catch (error) {
     console.error(error);
+    return error;
   }
 }

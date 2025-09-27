@@ -1,6 +1,5 @@
 'use client';
 import { ChangeEvent, HTMLProps } from 'react';
-import { cva } from 'class-variance-authority';
 import { Search, LoaderCircle, CircleX } from 'lucide-react';
 import styles from './SearchInput.module.scss';
 
@@ -11,11 +10,6 @@ interface SearchInputProps {
   onClear: HTMLProps<HTMLButtonElement>['onClick'];
   value: string;
 };
-
-const search = cva(styles.searchInput, {
-  variants: {
-  },
-});
 
 export default function SearchInput({
   disabled = false,

@@ -1,13 +1,11 @@
 'use client';
 import { useCallback, useEffect, useState, useTransition } from 'react';
-import { useFloating, useDismiss, useInteractions, autoUpdate } from '@floating-ui/react';
-import { format } from 'date-fns';
+import Image from 'next/image';
 import { IReleaseGroupList } from 'musicbrainz-api';
 
 import useDebounce from '@/app/util/useDebounce';
 import {
   Dialog,
-  DialogTrigger,
   DialogContent,
   DialogHeading,
   DialogDescription,
@@ -19,7 +17,7 @@ import styles from './AddToPile.module.scss';
 
 export default function AddToPile() {
   const [searchValue, setSearchValue] = useState<string>('');
-  const debouncedSearchValue = useDebounce(searchValue);
+  const debouncedSearchValue = useDebounce(searchValue) as string;
   const [isPending, startTransition] = useTransition();
   const [results, setResults] = useState<IReleaseGroupList | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
@@ -63,8 +61,10 @@ export default function AddToPile() {
           <ol>
             {results['release-groups'].map((result) => (
               <li key={result.id} className={styles.resultItem}>
-                <img
+                <Image
                   loading="lazy"
+                  width={200}
+                  height={200}
                   src={`https://coverartarchive.org/release-group/${result.id}/front-200`}
                   alt=""
                 />
