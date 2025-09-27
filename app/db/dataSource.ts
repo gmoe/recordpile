@@ -21,12 +21,12 @@ const AppDataSource = new DataSource({
   migrations: ['app/db/migrations/**/*.ts'],
   synchronize: !isProduction,
   logging: false,
-  host: 'localhost',
-  port: 5432,
-  username: 'root',
-  password: 'root',
+  host: process.env.POSTGRES_HOST,
+  port: Number(process.env.POSTGRES_PORT),
+  username: process.env.POSTGRES_USERNAME,
+  password: process.env.POSTGRES_PASSWORD,
   ssl: {
-    rejectUnauthorized: false,
+    rejectUnauthorized: isProduction,
   },
 });
 
