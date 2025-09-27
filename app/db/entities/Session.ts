@@ -1,8 +1,8 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('session')
 export class Session {
-  @PrimaryColumn('text')
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column('date', { name: 'expiresAt', nullable: false })

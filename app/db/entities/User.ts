@@ -1,8 +1,8 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('user')
 export class User {
-  @PrimaryColumn('text')
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column('text', { name: 'name', nullable: false })
@@ -11,7 +11,7 @@ export class User {
   @Column('text', { name: 'email', nullable: false, unique: true })
   email: string;
 
-  @Column('integer', { name: 'emailVerified', nullable: false })
+  @Column('boolean', { name: 'emailVerified', nullable: false })
   emailVerified: boolean;
 
   @Column('text', { name: 'image', nullable: true })

@@ -29,7 +29,9 @@
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": ["node_modules"],
   "ts-node": {
+    "transpileOnly": true,
     "esm": true,
-    "experimentalSpecifierResolution": "node"
+    "experimentalSpecifierResolution": "node",
+    "require": ["tsconfig-paths/register"]
   }
 }

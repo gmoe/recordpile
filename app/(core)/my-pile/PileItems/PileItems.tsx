@@ -16,6 +16,17 @@ export default function PileItems({ pileItems }: PileItemsProps) {
 
   const isShowingQueuedItems = filters.status?.includes(PileItemStatus.QUEUED) ?? false;
 
+  if (!pileItems.length) {
+    return (
+      <div className={styles.emptyCta}>
+        <p>
+          There are no pile items in your queue, you can
+          add more by clicking the button in the toolbar.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <ol className={styles.pile}>
       {pileItems.map((item, index) => (

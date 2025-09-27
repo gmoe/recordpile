@@ -4,17 +4,21 @@ import process from 'node:process';
 import 'reflect-metadata';
 import { DataSource } from 'typeorm';
 
-const isProduction = process.env.NODE_ENV === 'production';
+import { PileItem } from './entities/PileItem';
+import { PileItemSubscriber } from './subscribers/PileItemSubscriber';
+import { User } from './entities/User';
+import { Verification } from './entities/Verification';
+import { Session } from './entities/Session';
+import { Account } from './entities/Account';
 
-// typeorm cli doesn't run in an ESM context...
-const wd = typeof __dirname === 'undefined' ? process.cwd() : __dirname;
+const isProduction = process.env.NODE_ENV === 'production';
 
 const AppDataSource = new DataSource({
   type: 'postgres',
   database: 'recordpile',
-  entities: [path.join(wd, 'app/db/entities/**/*.ts')],
-  subscribers: [path.join(wd, 'app/db/subscribers/**/*.ts')],
-  migrations: [path.join(wd, 'app/db/migrations/**/*.ts')],
+  entities: [PileItem, User, Verification, Session, Account],
+  subscribers: [PileItemSubscriber],
+  migrations: ['app/db/migrations/**/*.ts'],
   synchronize: !isProduction,
   logging: false,
   host: 'localhost',

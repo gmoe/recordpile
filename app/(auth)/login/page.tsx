@@ -16,6 +16,7 @@ export default function Login() {
           </label>
           <input
             id="login-email"
+            name="email"
             type="email"
             required
           />
@@ -26,6 +27,7 @@ export default function Login() {
           </label>
           <input
             id="login-password"
+            name="password"
             type="password"
             required
           />
