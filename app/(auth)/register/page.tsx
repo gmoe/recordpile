@@ -13,7 +13,7 @@ export default function Register() {
     if (loginState?.success) {
       router.push('/login');
     }
-  }, [loginState]);
+  }, [router, loginState]);
 
   return (
     <div>

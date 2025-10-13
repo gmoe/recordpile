@@ -40,6 +40,11 @@ export default function Login() {
           Login
         </button>
       </form>
+      {Boolean(loginState?.error) && (
+        <div>
+          Something went wrong...
+        </div>
+      )}
     </div>
   );
 }
