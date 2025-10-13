@@ -1,4 +1,5 @@
 'use client';
+import { useState } from 'react';
 import Image from 'next/image';
 import { format } from 'date-fns';
 import { ChevronDown, ChevronUp } from 'lucide-react';
@@ -36,6 +37,8 @@ export default function PileItem({
   nextOrderIndex,
   previousOrderIndex,
 }: PileItemProps) {
+  const [editingNotes, setEditingNotes] = useState<boolean>(false);
+  const [stagedNotes, setStagedNotes] = useState<string>(item.notes ?? '');
   const hideReorder = nextOrderIndex === null && previousOrderIndex === null;
 
   return (
@@ -67,10 +70,27 @@ export default function PileItem({
           (event.target as HTMLImageElement).src = missingArt.src;
         }}
       />
-      <div className={styles.albumInfo}>
-        <span className={styles.artist}>{item.artistName}</span>
-        <span className={styles.album}>{item.albumName}</span>
-      </div>
+      {editingNotes ? (
+        <div className={styles.albumInfo}>
+          <label htmlFor={`notes-${item.id}`}>Notes</label>
+          <textarea
+            id={`notes-${item.id}`}
+            onChange={(event) => setStagedNotes(event.target.value)}
+            value={stagedNotes}
+          />
+          <button
+            type="submit"
+            onClick={() => updatePileItem(item.id, { notes: stagedNotes })}
+          >
+            Save
+          </button>
+        </div>
+      ) : (
+        <div className={styles.albumInfo}>
+          <span className={styles.artist}>{item.artistName}</span>
+          <span className={styles.album}>{item.albumName}</span>
+        </div>
+      )}
       <div className={styles.controls}>
         {item.status === PileItemStatus.QUEUED && (
           <span>Added: {format(item.addedAt ?? new Date(), 'PP')}</span>
@@ -89,6 +109,9 @@ export default function PileItem({
           <option value={PileItemStatus.FINISHED}>Listened</option>
           <option value={PileItemStatus.DID_NOT_FINISH}>Did Not Finish</option>
         </Select>
+        <button onClick={() => setEditingNotes((s) => !s)}>
+          {editingNotes ? 'View Album' : 'Edit Notes'}
+        </button>
         <button onClick={() => deletePileItem(item.id)}>
           Remove
         </button>

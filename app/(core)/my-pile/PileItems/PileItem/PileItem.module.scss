@@ -2,7 +2,7 @@
   display: grid;
   padding: 16px;
   grid-template-areas: 'index cover info controls';
-  grid-template-columns: min-content min-content 1fr 1fr;
+  grid-template-columns: min-content min-content 1fr min-content;
   align-items: center;
   gap: 16px;
   border: 1px solid var(--foreground);
@@ -10,7 +10,7 @@
 
   &.hideReorder {
     grid-template-areas: 'cover info controls';
-    grid-template-columns: min-content 1fr 1fr;
+    grid-template-columns: min-content 1fr min-content;
   }
 
   .index {
@@ -53,6 +53,11 @@
       font-weight: 600;
       font-size: 1.25rem;
     }
+
+    textarea {
+      width: 100%;
+      resize: vertical;
+    }
   }
 
   .controls {
@@ -60,6 +65,7 @@
     display: grid;
     justify-self: end;
     gap: 4px;
+    white-space: nowrap;
   }
 }
 

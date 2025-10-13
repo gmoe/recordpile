@@ -14,3 +14,10 @@
   border: 1px solid var(--foreground);
   border-radius: 4px;
 }
+
+@media (width <= 650px) {
+  .pile {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+}
