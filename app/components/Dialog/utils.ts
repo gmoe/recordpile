@@ -13,7 +13,7 @@ import {
   useRole,
   useInteractions,
 } from '@floating-ui/react';
-import { type DialogOptions } from './Modal';
+import { type DialogOptions } from './Dialog';
 
 export function useDialog({
   initialOpen = false,
