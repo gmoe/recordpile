@@ -1,4 +1,3 @@
-import { readFileSync } from 'node:fs';
 import { drizzle } from 'drizzle-orm/node-postgres';
 
 import * as schema from './schemas';
@@ -9,7 +8,7 @@ export const database: ReturnType<typeof drizzle<typeof schema>> = drizzle({
   connection: {
     connectionString: process.env.DATABASE_URL!,
     ssl: isProduction
-      ? { ca: readFileSync(process.env.DATABASE_CA_CERT!).toString() }
+      ? { ca: process.env.DATABASE_CA_CERT! }
       : false,
   },
   schema,
