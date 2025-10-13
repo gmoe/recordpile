@@ -1,11 +1,14 @@
 'use server';
-import { redirect } from 'next/navigation';
-// import { dbSource } from '@/app/db';
 import { auth } from '@/app/lib/auth';
 
 // TODO: Validation
-export const register = async (formState: unknown, formData: FormData) => {
-  // await dbSource();
+export const register = async (formState: unknown, formData: FormData): Promise<{
+  success: boolean;
+  error: Error | null;
+}> => {
+  if (process.env.DISABLE_ACCOUNT_REGISTRATION) {
+    return { success: false, error: new Error('No fam') };
+  };
 
   try {
     await auth.api.signUpEmail({
@@ -16,9 +19,9 @@ export const register = async (formState: unknown, formData: FormData) => {
       }
     });
 
-    redirect('/login');
+    return { success: true, error: null };
   } catch (error) {
     console.error(error);
-    return error;
+    return { success: false, error: error as Error };
   }
 }

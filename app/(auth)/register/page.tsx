@@ -1,13 +1,19 @@
 'use client';
-import { useActionState } from 'react';
+import { useActionState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 import { register } from './actions';
 import styles from './page.module.scss';
 
 export default function Register() {
+  const router = useRouter();
   const [loginState, handleLogIn, isLoggingIn] = useActionState(register, undefined);
 
-  console.log('loginState', loginState);
+  useEffect(() => {
+    if (loginState?.success) {
+      router.push('/login');
+    }
+  }, [loginState]);
 
   return (
     <div>
@@ -52,6 +58,11 @@ export default function Register() {
         >
           Register
         </button>
+        {Boolean(loginState?.error) && (
+          <div>
+            Something wrong happened...
+          </div>
+        )}
       </form>
     </div>
   );
