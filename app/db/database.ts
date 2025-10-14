@@ -1,4 +1,6 @@
+import { resolve } from 'node:path';
 import { drizzle } from 'drizzle-orm/node-postgres';
+import { migrate } from 'drizzle-orm/node-postgres/migrator';
 
 import * as schema from './schemas';
 
@@ -17,3 +19,7 @@ export const database: ReturnType<typeof drizzle<typeof schema>> = drizzle({
   },
   schema,
 });
+
+if (isProduction) {
+  migrate(database, { migrationsFolder: resolve(__dirname, 'drizzle') });
+}
