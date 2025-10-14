@@ -1,11 +1,19 @@
 'use client';
-import { useActionState } from 'react';
+import { useActionState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 import { logIn } from './actions';
 import styles from './page.module.scss';
 
 export default function Login() {
+  const router = useRouter();
   const [loginState, handleLogIn, isLoggingIn] = useActionState(logIn, undefined);
+
+  useEffect(() => {
+    if (loginState?.success) {
+      router.push('/');
+    }
+  }, [router, loginState]);
 
   return (
     <div>

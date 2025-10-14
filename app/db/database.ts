@@ -19,5 +19,4 @@ export const database: ReturnType<typeof drizzle<typeof schema>> = drizzle({
       : false,
   },
   schema,
-  logger: true,
 });

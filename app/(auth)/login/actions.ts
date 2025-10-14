@@ -1,6 +1,4 @@
 'use server';
-import { redirect } from 'next/navigation';
-
 import { auth } from '@/app/lib/auth';
 
 // TODO: Validation
@@ -13,9 +11,9 @@ export const logIn = async (formState: unknown, formData: FormData) => {
       }
     });
 
-    redirect('/my-pile');
+    return { success: true, error: null };
   } catch (error) {
     console.error(error);
-    return { error };
+    return { success: false, error };
   }
 }
