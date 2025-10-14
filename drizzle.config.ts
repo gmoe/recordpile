@@ -16,4 +16,8 @@ export default defineConfig({
       ? { ca: process.env.DATABASE_CA_CERT! }
       : false,
   },
+  schemaFilter: 'public',
+  migrations: {
+    schema: 'public',
+  },
 })
