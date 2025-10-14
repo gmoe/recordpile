@@ -15,6 +15,7 @@ export const logIn = async (formState: unknown, formData: FormData) => {
 
     redirect('/my-pile');
   } catch (error) {
+    console.error(error);
     return { error };
   }
 }
