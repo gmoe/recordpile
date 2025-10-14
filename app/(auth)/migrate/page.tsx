@@ -1,13 +1,9 @@
-'use server';
+'use client';
 
-import { migrate } from 'drizzle-orm/node-postgres/migrator';
-import { database } from '@/app/db';
+import { startMigration } from './actions';
 
-export default async function Migrate() {
-  await migrate(database, {
-    migrationsFolder: 'drizzle',
-    migrationsSchema: 'public',
-  });
+export default function Migrate() {
+  startMigration();
 
   return (
     <div>
