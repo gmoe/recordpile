@@ -12,8 +12,12 @@ export const database: ReturnType<typeof drizzle<typeof schema>> = drizzle({
     password: process.env.DATABASE_PASSWORD!,
     database: process.env.DATABASE_NAME!,
     ssl: isProduction
-      ? { ca: process.env.DATABASE_CA_CERT! }
+      ? {
+        ca: process.env.DATABASE_CA_CERT!,
+        checkServerIdentity: () => { return undefined; },
+      }
       : false,
   },
   schema,
+  logger: true,
 });
