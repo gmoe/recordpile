@@ -4,6 +4,7 @@ import { Search, LoaderCircle, CircleX } from 'lucide-react';
 import styles from './SearchInput.module.scss';
 
 interface SearchInputProps {
+  autoFocus?: boolean;
   disabled?: boolean;
   isLoading?: boolean;
   onChange: (event: ChangeEvent<HTMLInputElement>) => void;
@@ -12,6 +13,7 @@ interface SearchInputProps {
 };
 
 export default function SearchInput({
+  autoFocus = false,
   disabled = false,
   isLoading = false,
   onChange,
@@ -33,6 +35,7 @@ export default function SearchInput({
         disabled={disabled}
         onChange={onChange}
         value={value}
+        autoFocus={autoFocus}
       />
       {Boolean(value.length) && (
         <button

@@ -53,6 +53,7 @@ export default function AddToPile() {
         <DialogHeading>Add to Pile</DialogHeading>
         <DialogDescription>
         <SearchInput
+          autoFocus
           onChange={(event) => setSearchValue(event.target.value)}
           onClear={() => setSearchValue('')}
           value={searchValue}
