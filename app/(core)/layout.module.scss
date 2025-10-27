@@ -7,6 +7,10 @@
   align-items: center;
 }
 
+.main {
+  margin-bottom: 16px;
+}
+
 @media (width <= 650px) {
   .header {
     padding-left: 8px;

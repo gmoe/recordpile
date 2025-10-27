@@ -1,0 +1,8 @@
+{
+  "name": "RecordPile",
+  "short_name": "RecordPile",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f2eedd",
+  "theme_color": "#103b73"
+}

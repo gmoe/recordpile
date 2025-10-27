@@ -15,7 +15,7 @@ export default function RootLayout({
         <Image src={logo.src} alt="RecordPile logo" width="200" height="56" />
         <NavLinks />
       </header>
-      <main>
+      <main className={styles.main}>
         {children}
       </main>
     </>
