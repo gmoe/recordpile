@@ -2,6 +2,6 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px;
-  grid-auto-flow: column;
+  grid-auto-flow: row;
   grid-auto-rows: minmax(300px, auto);
 }

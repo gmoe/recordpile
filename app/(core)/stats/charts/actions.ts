@@ -4,19 +4,20 @@ import {
   startOfYear,
   interval,
   eachDayOfInterval,
+  subDays,
   format,
 } from 'date-fns';
-import { sql, count, between } from 'drizzle-orm';
+import { sql, count, between, eq, desc } from 'drizzle-orm';
 
 import { database } from '@/app/db';
-import { pileItems } from '@/app/db/schemas/pileItems';
+import { pileItems, PileItemStatus } from '@/app/db/schemas/pileItems';
 
 /*
  * TODO: Stats ideas
  *
  * – [x] Average time to listen
- * – [ ] Line chart: y - Number of albums heard, x - month
- * – [ ] Line chart: y - Number of albums heard, x - week
+ * – [ ] Line chart: y - Number of albums heard, x - month/year
+ * – [x] Line chart: y - Number of albums heard, x - day/month
  * – [ ] 10 Most heard artists in month, year
  * – [ ] 10 Most heard labels in month, year
  * – [ ] Average release year in current month, year
@@ -43,7 +44,9 @@ export type AlbumsHeardHistory = {
    albumNames: string[];
 }
 
-export async function getNumberAlbumsHeard(timeFrame: 'month' | 'year'): Promise<AlbumsHeardHistory[]> {
+export async function getNumberAlbumsHeard(
+  timeFrame: 'month' | 'year'
+): Promise<AlbumsHeardHistory[]> {
   const startDate = timeFrame === 'month'
     ? startOfMonth(new Date())
     : startOfYear(new Date());
@@ -74,4 +77,29 @@ export async function getNumberAlbumsHeard(timeFrame: 'month' | 'year'): Promise
       albumNames: [],
     }
   ));
+}
+
+export async function getTopArtistsHeard(
+  timeFrame: '30days' | 'month' | 'year'
+): Promise<{ artistName: string, count: number }[]> {
+  const now = new Date();
+  const startDate = (() => {
+    switch (timeFrame) {
+      case '30days': return subDays(now, 30);
+      case 'month': return startOfMonth(now);
+      case 'year': return startOfYear(now);
+    }
+  })();
+
+  const statsResult = await database
+    .select({
+      artistName: pileItems.artistName,
+      count: count(),
+    })
+    .from(pileItems)
+    .where(eq(pileItems.status, PileItemStatus.FINISHED))
+    .groupBy(pileItems.artistName)
+    .orderBy(({ count }) => desc(count));
+
+  return statsResult;
 }

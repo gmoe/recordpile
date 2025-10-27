@@ -1,0 +1,15 @@
+.container {
+  display: grid;
+  align-items: center;
+  align-content: center;
+  gap: 16px;
+
+  .title {
+    font-weight: 600;
+    text-align: center;
+  }
+
+  .artists {
+    list-style-position: inside;
+  }
+}

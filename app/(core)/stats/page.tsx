@@ -5,6 +5,7 @@ import { getSessionOrRedirect } from '@/app/lib/auth';
 import LoadingSkeleton from './charts/LoadingSkeleton';
 import AverageDaysCompletion from './charts/AverageDaysCompletion';
 import ListeningHistory from './charts/ListeningHistory';
+import TopArtists from './charts/TopArtists';
 import { getNumberAlbumsHeard } from './charts/actions';
 import styles from './page.module.scss';
 
@@ -18,6 +19,7 @@ export default async function Stats() {
       <Suspense fallback={<LoadingSkeleton />}>
         <ListeningHistory albumHistory={albumHistory} />
       </Suspense>
+      <TopArtists />
     </div>
   );
 }
