@@ -3,7 +3,6 @@ import { useCallback, useEffect, useState, useTransition } from 'react';
 import Image from 'next/image';
 import { IReleaseGroupList } from 'musicbrainz-api';
 
-import useDebounce from '@/app/util/useDebounce';
 import {
   Dialog,
   DialogContent,
@@ -17,18 +16,17 @@ import styles from './AddToPile.module.scss';
 
 export default function AddToPile() {
   const [searchValue, setSearchValue] = useState<string>('');
-  const debouncedSearchValue = useDebounce(searchValue) as string;
   const [isPending, startTransition] = useTransition();
   const [results, setResults] = useState<IReleaseGroupList | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
 
-  useEffect(() => {
+  const handleSearch = useCallback(() => {
     startTransition(async () => {
-      if (!debouncedSearchValue.length) return;
-      const result = await searchForNewItems(debouncedSearchValue);
+      if (!searchValue.length) return;
+      const result = await searchForNewItems(searchValue);
       setResults(result);
     });
-  }, [debouncedSearchValue, setResults]);
+  }, [searchValue, setResults]);
 
   const handleAddToPile = useCallback(async (
     result: IReleaseGroupList['release-groups'][0]
@@ -52,12 +50,14 @@ export default function AddToPile() {
       <DialogContent>
         <DialogHeading>Add to Pile</DialogHeading>
         <DialogDescription>
-        <SearchInput
-          autoFocus
-          onChange={(event) => setSearchValue(event.target.value)}
-          onClear={() => setSearchValue('')}
-          value={searchValue}
-        />
+          <form action={handleSearch}>
+            <SearchInput
+              autoFocus
+              onChange={(event) => setSearchValue(event.target.value)}
+              onClear={() => setSearchValue('')}
+              value={searchValue}
+            />
+          </form>
         {results && (results.count ?? false) && (
           <ol>
             {results['release-groups'].map((result) => (
