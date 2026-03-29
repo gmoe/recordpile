@@ -1,11 +1,12 @@
 'use server';
 import { revalidatePath } from 'next/cache';
 import { notFound } from 'next/navigation';
-import { MusicBrainzApi, IReleaseGroupList } from 'musicbrainz-api';
+import { MusicBrainzApi } from 'musicbrainz-api';
 import { DiscogsClient } from '@lionralfs/discogs-client';
 import { asc, desc, eq, ilike, and, or, inArray, gt, lte, gte, lt, sql } from 'drizzle-orm';
 
 import { SortableContract } from '@/app/api/types';
+import { sanitizeReleaseGroupList, type MBReleaseGroup, type MBResultList } from '@/app/util/musicBrainz';
 import { database } from '@/app/db';
 import {
   pileItems,
@@ -82,10 +83,41 @@ export async function getDiscogsCollection() {
   return collection;
 }
 
-export async function searchForNewItems(query: string): Promise<IReleaseGroupList> {
+export type ClientReleaseGroup = MBReleaseGroup & {
+  inPile: boolean;
+};
+
+export async function searchForNewItems(query: string): Promise<MBResultList<ClientReleaseGroup>> {
   // TODO: Handle pagination
-  const releases = await mbApi.search('release-group', { query });
-  return releases;
+  const releases = sanitizeReleaseGroupList(
+    await mbApi.search('release-group', { query })
+  );
+
+  const existingMatches = await database.query.pileItems.findMany({
+    columns: {
+      coverImage: false,
+    },
+    where: inArray(
+      pileItems.musicBrainzReleaseGroupId,
+      releases.results.map((group) => group.id)
+    ),
+  });
+  const itemsMap = existingMatches.reduce<Record<PileItem['id'], boolean>>((acc, item) => {
+    if (item.musicBrainzReleaseGroupId) {
+      acc[item.musicBrainzReleaseGroupId] = true;
+    }
+    return acc;
+  }, {});
+
+  const clientReleases: ClientReleaseGroup[] = releases.results.map((release) => ({
+    ...release,
+    inPile: itemsMap[release.id] ?? false,
+  }));
+
+  return {
+    ...releases,
+    results: clientReleases,
+  };
 }
 
 export async function createPileItem(pileItem: {

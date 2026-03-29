@@ -1,8 +1,8 @@
 'use client';
-import { useCallback, useEffect, useState, useTransition } from 'react';
+import { useCallback, useState, useTransition } from 'react';
 import Image from 'next/image';
-import { IReleaseGroupList } from 'musicbrainz-api';
 
+import type { MBResultList } from '@/app/util/musicBrainz';
 import {
   Dialog,
   DialogContent,
@@ -11,13 +11,13 @@ import {
   DialogClose,
 } from '@/app/components/Dialog';
 import SearchInput from '@/app/components/SearchInput';
-import { createPileItem, searchForNewItems } from '../../actions';
+import { createPileItem, searchForNewItems, type ClientReleaseGroup } from '../../actions';
 import styles from './AddToPile.module.scss';
 
 export default function AddToPile() {
   const [searchValue, setSearchValue] = useState<string>('');
   const [isPending, startTransition] = useTransition();
-  const [results, setResults] = useState<IReleaseGroupList | null>(null);
+  const [results, setResults] = useState<MBResultList<ClientReleaseGroup> | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
 
   const handleSearch = useCallback(() => {
@@ -29,12 +29,12 @@ export default function AddToPile() {
   }, [searchValue, setResults]);
 
   const handleAddToPile = useCallback(async (
-    result: IReleaseGroupList['release-groups'][0]
+    item: ClientReleaseGroup
   ) => {
     await createPileItem({
-      albumName: result.title,
-      artistName: result['artist-credit'].map(artist => artist.name).join(', '),
-      musicBrainzReleaseGroupId: result.id,
+      albumName: item.title,
+      artistName: item.artistCredit.map(artist => artist.name).join(', '),
+      musicBrainzReleaseGroupId: item.id,
     });
     setSearchValue('');
     setResults(null);
@@ -60,7 +60,7 @@ export default function AddToPile() {
           </form>
         {results && (results.count ?? false) && (
           <ol>
-            {results['release-groups'].map((result) => (
+            {results.results.map((result) => (
               <li key={result.id} className={styles.resultItem}>
                 <Image
                   loading="lazy"
@@ -74,12 +74,12 @@ export default function AddToPile() {
                     {result.title}
                   </span>
                   <span className={styles.artist}>
-                    {result['artist-credit'].map(artist => artist.name).join(', ')}
+                    {result.artistCredit.map(artist => artist.name).join(', ')}
                   </span>
                 </div>
                 <div className={styles.controls}>
                   <span>
-                    Release Date: {result['first-release-date'] ?? 'Unknown'}
+                    Release Date: {result.firstReleaseDate ?? 'Unknown'}
                   </span>
                   <button
                     type="button"
@@ -89,10 +89,10 @@ export default function AddToPile() {
                   </button>
                   <button
                     type="button"
-                    disabled={isPending}
+                    disabled={isPending || result.inPile}
                     onClick={() => handleAddToPile(result)}
                   >
-                    Add to Pile
+                    {result.inPile ? 'Already In Pile' : 'Add to Pile'}
                   </button>
                 </div>
               </li>

@@ -83,6 +83,8 @@ export async function getTopArtistsHeard(
   timeFrame: '30days' | 'month' | 'year'
 ): Promise<{ artistName: string, count: number }[]> {
   const now = new Date();
+  // TODO
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const startDate = (() => {
     switch (timeFrame) {
       case '30days': return subDays(now, 30);
