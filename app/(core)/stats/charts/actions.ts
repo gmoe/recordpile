@@ -7,7 +7,7 @@ import {
   subDays,
   format,
 } from 'date-fns';
-import { sql, count, between, eq, desc } from 'drizzle-orm';
+import { sql, count, between, gt, eq, desc, and } from 'drizzle-orm';
 
 import { database } from '@/app/db';
 import { pileItems, PileItemStatus } from '@/app/db/schemas/pileItems';
@@ -18,7 +18,8 @@ import { pileItems, PileItemStatus } from '@/app/db/schemas/pileItems';
  * – [x] Average time to listen
  * – [ ] Line chart: y - Number of albums heard, x - month/year
  * – [x] Line chart: y - Number of albums heard, x - day/month
- * – [ ] 10 Most heard artists in month, year
+ * – [x] 10 Most heard artists in month, year
+ * - [ ] Total albums heard
  * – [ ] 10 Most heard labels in month, year
  * – [ ] Average release year in current month, year
  * – [ ] Genres of the past
@@ -79,8 +80,30 @@ export async function getNumberAlbumsHeard(
   ));
 }
 
-export async function getTopArtistsHeard(
+export async function getTotalAlbumCount(
   timeFrame: '30days' | 'month' | 'year'
+): Promise<number> {
+  const now = new Date();
+
+  const startDate = (() => {
+    switch (timeFrame) {
+      case '30days': return subDays(now, 30);
+      case 'month': return startOfMonth(now);
+      case 'year': return startOfYear(now);
+    }
+  })();
+
+  const count = await database
+    .$count(pileItems, and(
+      eq(pileItems.status, PileItemStatus.FINISHED),
+      gt(pileItems.finishedAt, startDate),
+    ));
+
+  return count;
+}
+
+export async function getTopArtistsHeard(
+  timeFrame: '30days' | 'month' | 'year' | 'allTime'
 ): Promise<{ artistName: string, count: number }[]> {
   const now = new Date();
   // TODO
@@ -90,6 +113,7 @@ export async function getTopArtistsHeard(
       case '30days': return subDays(now, 30);
       case 'month': return startOfMonth(now);
       case 'year': return startOfYear(now);
+      case 'allTime': return (new Date(0));
     }
   })();
 

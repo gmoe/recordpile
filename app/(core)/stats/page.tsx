@@ -3,6 +3,7 @@ import { Suspense } from 'react';
 
 import { getSessionOrRedirect } from '@/app/lib/auth';
 import LoadingSkeleton from './charts/LoadingSkeleton';
+import TotalAlbums from './charts/TotalAlbums';
 import AverageDaysCompletion from './charts/AverageDaysCompletion';
 import ListeningHistory from './charts/ListeningHistory';
 import TopArtists from './charts/TopArtists';
@@ -15,11 +16,12 @@ export default async function Stats() {
 
   return (
     <div className={styles.charts}>
-      <AverageDaysCompletion />
+      <TotalAlbums />
       <Suspense fallback={<LoadingSkeleton />}>
         <ListeningHistory albumHistory={albumHistory} />
       </Suspense>
       <TopArtists />
+      <AverageDaysCompletion />
     </div>
   );
 }
