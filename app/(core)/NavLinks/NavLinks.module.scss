@@ -3,6 +3,7 @@
 
   .link {
     padding: 8px 12px;
+    background: var(--surface-1);
     border: 1px solid var(--foreground);
 
     &.active {

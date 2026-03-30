@@ -29,14 +29,19 @@ export default function ListeningHistory({ albumHistory }: ListeningHistoryProps
         type: 'bar',
         data: {
           labels: chartData.map(row => format(row.finishedDay, 'MMMM d')),
-            datasets: [
-            {
-              label: 'Listens this month',
-              data: chartData.map(row => row.count),
-              backgroundColor: foreground,
-            }
-          ]
-        }
+          datasets: [{
+            label: 'Count',
+            data: chartData.map(row => row.count),
+            backgroundColor: foreground,
+          }],
+        },
+        options: {
+          scales: {
+            y: {
+              ticks: { stepSize: 1 },
+            },
+          },
+        },
       }
     );
 
@@ -46,8 +51,11 @@ export default function ListeningHistory({ albumHistory }: ListeningHistoryProps
   }, [chartElRef, chartData]);
 
   return (
-    <div className={`${chartStyles.container} ${styles.chartContainer}`}>
-      <canvas ref={chartElRef} />
+    <div className={chartStyles.container}>
+      <span className={styles.title}>Listens This Month</span>
+      <div className={styles.chartContainer}>
+        <canvas ref={chartElRef} />
+      </div>
     </div>
   );
 }

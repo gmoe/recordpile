@@ -1,9 +1,10 @@
 :root {
   /* --background: #ffffff; */
   /* --foreground: #171717; */
-  --background: #f2eedd;
+  --background: #fcfbf5;
   --foreground: #103b73;
   --gray: #8e8c82;
+  --surface-1: #fff;
 }
 
 /* @media (prefers-color-scheme: dark) { */
@@ -52,7 +53,7 @@ a {
 
 input, textarea {
   padding: 8px;
-  background: var(--background);
+  background: var(--surface-1);
   color: var(--foreground);
   font-size: 1rem;
   border: 1px solid var(--foreground);
@@ -85,7 +86,7 @@ button {
   padding: 8px 12px;
   font-size: 1rem;
   background: var(--foreground);
-  color: var(--background);
+  color: var(--surface-1);
   border: 1px solid var(--foreground);
   cursor: pointer;
   transition-property: background, color;
