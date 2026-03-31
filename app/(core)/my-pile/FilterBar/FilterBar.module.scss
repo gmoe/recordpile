@@ -16,6 +16,8 @@
 
   .statusFilters {
     grid-area: statusFilters;
+    display: flex;
+    align-items: center;
 
     .filter {
       margin: 0;
@@ -54,11 +56,11 @@
     align-items: center;
     justify-self: end;
     gap: 4px;
+  }
 
-    .icon {
-      width: 16px;
-      height: 16px;
-    }
+  .sortIcon {
+    width: 16px;
+    height: 16px;
   }
 }
 

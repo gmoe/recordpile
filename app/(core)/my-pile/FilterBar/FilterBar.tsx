@@ -42,7 +42,11 @@ export default function FilterBar() {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const debouncedSearchQuery = useDebounce(searchQuery, 250);
 
-  const [sortValue, setSortValue] = useState<SortStateValue>('orderIndex-DESC');
+  const [sortValue, setSortValue] = useState<SortStateValue>(
+    searchParams.get('sortField') && searchParams.get('sortDirection')
+      ?  `${searchParams.get('sortField') as SortContract['field']}-${searchParams.get('sortDirection') as SortContract['order']}`
+      : 'orderIndex-DESC'
+  );
 
   useEffect(() => {
     const params = new URLSearchParams(searchParams);
@@ -123,7 +127,7 @@ export default function FilterBar() {
       </div>
       {filters.status === PileItemStatus.QUEUED && (
         <div className={styles.sorting}>
-          <ArrowUpDown className={styles.icon} />
+          <ArrowUpDown className={styles.sortIcon} />
           <Select
             id="sortBySelect"
             aria-label="Sort By"
@@ -131,12 +135,30 @@ export default function FilterBar() {
             value={sortValue}
           >
             <option value="orderIndex-DESC">My Order</option>
-            <option value="artistName-ASC"><span>Artist Name – </span><ArrowUpAZ /></option>
-            <option value="artistName-DESC"><span>Artist Name – </span><ArrowDownAZ /></option>
-            <option value="albumName-ASC"><span>Album Name – </span><ArrowUpAZ /></option>
-            <option value="albumName-DESC"><span>Album Name – </span><ArrowDownAZ /></option>
-            <option value="addedAt-ASC"><span>Added At – </span><ArrowUpAZ /></option>
-            <option value="addedAt-DESC"><span>Added At – </span><ArrowDownAZ /></option>
+            <option value="artistName-ASC">
+              <span>Artist</span>
+              <ArrowUpAZ className={styles.sortIcon} />
+            </option>
+            <option value="artistName-DESC">
+              <span>Artist</span>
+              <ArrowDownAZ className={styles.sortIcon} />
+            </option>
+            <option value="albumName-ASC">
+              <span>Album</span>
+              <ArrowUpAZ className={styles.sortIcon} />
+            </option>
+            <option value="albumName-DESC">
+              <span>Album</span>
+              <ArrowDownAZ className={styles.sortIcon} />
+            </option>
+            <option value="addedAt-ASC">
+              <span>Added At </span>
+              <ArrowUpAZ className={styles.sortIcon} />
+            </option>
+            <option value="addedAt-DESC">
+              <span>Added At </span>
+              <ArrowDownAZ className={styles.sortIcon} />
+            </option>
           </Select>
         </div>
       )}
