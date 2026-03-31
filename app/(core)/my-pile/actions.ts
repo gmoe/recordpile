@@ -25,7 +25,7 @@ export type ClientPileItem = Omit<PileItem, 'coverImage'> & {
   coverImageUrl: string;
 };
 
-type PileItemSearchFilters = {
+export type PileItemSearchFilters = {
   searchQuery?: string;
   filters?: {
     owned?: boolean;

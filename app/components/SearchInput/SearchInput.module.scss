@@ -1,6 +1,6 @@
 .container {
   position: relative;
-  display: inline-flex;
+  display: flex;
 
   .iconPrefix {
     position: absolute;
@@ -17,6 +17,7 @@
   }
 
   .searchInput {
+    width: 100%;
     padding: 8px 32px;
 
     &:disabled {

@@ -6,14 +6,15 @@
     background: var(--surface-1);
     border: 1px solid var(--foreground);
 
+    &:hover {
+      text-decoration: underline;
+    }
+
     &.active {
       background: var(--foreground);
       color: var(--background);
       text-decoration: none;
-    }
-
-    &:hover {
-      text-decoration: underline;
+      cursor: default;
     }
   }
 }

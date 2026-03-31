@@ -9,7 +9,7 @@ export enum PileItemStatus {
 export const PileItemStatusLabels: Record<PileItemStatus, string> = {
   [PileItemStatus.QUEUED]: 'Queued',
   [PileItemStatus.FINISHED]: 'Finished',
-  [PileItemStatus.DID_NOT_FINISH]: 'Did Not Finish',
+  [PileItemStatus.DID_NOT_FINISH]: 'DNF',
 };
 
 const bytea = customType<{ data: Buffer; notNull: false; default: false }>({

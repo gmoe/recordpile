@@ -1,7 +1,7 @@
 .select {
   display: inline-flex;
-  padding-top: 4px;
-  padding-bottom: 4px;
+  padding-top: 8px;
+  padding-bottom: 8px;
   padding-left: 12px;
   padding-right: 4px;
   background: var(--surface-1);
@@ -40,8 +40,14 @@
   outline: 0;
 
   .option {
+    display: flex;
     padding: 8px 12px;
+    gap: 4px;
+    align-items: center;
     cursor: pointer;
+    transition-property: color, background;
+    transition-duration: 150ms;
+    transition-timing-function: ease-in;
 
     &:hover {
       background: var(--foreground);

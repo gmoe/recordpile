@@ -1,12 +1,14 @@
 .filterBar {
   display: grid;
+  padding: 0 8px;
   grid-template-areas:
-    'search statusFilters'
-    'addTo sorting';
-  grid-template-columns: 1fr 1fr;
+    'search search'
+    'statusFilters sorting'
+    'addTo addTo';
+  grid-template-columns: 1fr min-content;
   justify-items: space-between;
   row-gap: 8px;
-  column-gap: 32px;
+  column-gap: 8px;
 
   .searchContainer {
     grid-area: search;
@@ -14,7 +16,6 @@
 
   .statusFilters {
     grid-area: statusFilters;
-    justify-self: end;
 
     .filter {
       margin: 0;
@@ -38,6 +39,7 @@
         background: var(--foreground);
         color: var(--background);
         text-decoration: none;
+        cursor: default;
       }
     }
   }
@@ -51,28 +53,17 @@
     display: inline-flex;
     align-items: center;
     justify-self: end;
-    gap: 8px;
+    gap: 4px;
+
+    .icon {
+      width: 16px;
+      height: 16px;
+    }
   }
 }
 
 @media (width <= 650px) {
   .filterBar {
-    grid-template-areas: 'search' 'statusFilters' 'sorting' 'addTo';
-    grid-template-columns: 1fr;
-    justify-items: center;
-
-    .searchContainer {
-      justify-self: center;
-    }
-
-    .statusFilters {
-      justify-self: center;
-    }
-
-    .sorting {
-      justify-self: center;
-    }
-
     .addTo {
       justify-self: center;
     }

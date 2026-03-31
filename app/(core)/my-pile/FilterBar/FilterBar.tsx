@@ -2,11 +2,13 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 import { cva } from 'class-variance-authority';
+import { ArrowUpDown, ArrowDownAZ, ArrowUpAZ } from 'lucide-react';
 
 import { PileItemStatus, PileItemStatusLabels } from '@/app/db/schemas/pileItems';
 import SearchInput from '@/app/components/SearchInput';
 import Select from '@/app/components/Select';
 import useDebounce from '@/app/util/useDebounce';
+import type { PileItemSearchFilters } from '../actions';
 import AddToPile from './AddToPile';
 import styles from './FilterBar.module.scss';
 
@@ -21,6 +23,9 @@ const filterCva = cva(styles.filter, {
 type FilterState = {
   status: PileItemStatus;
 };
+
+type SortContract = NonNullable<PileItemSearchFilters['sort']>;
+type SortStateValue = `${SortContract['field']}-${SortContract['order']}`;
 
 export default function FilterBar() {
   const searchParams = useSearchParams();
@@ -37,8 +42,7 @@ export default function FilterBar() {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const debouncedSearchQuery = useDebounce(searchQuery, 250);
 
-  const [sortField, setSortField] = useState<string>('orderIndex');
-  const [sortDirection, setSortDirection] = useState<'ASC' | 'DESC'>('DESC');
+  const [sortValue, setSortValue] = useState<SortStateValue>('orderIndex-DESC');
 
   useEffect(() => {
     const params = new URLSearchParams(searchParams);
@@ -49,6 +53,7 @@ export default function FilterBar() {
     params.set('filters', JSON.stringify(serializedFilters));
 
     if (filters.status === PileItemStatus.QUEUED) {
+      const [sortField, sortDirection] = sortValue.split('-');
       params.set('sortField', sortField);
       params.set('sortDirection', sortDirection);
     } else if (filters.status === PileItemStatus.FINISHED) {
@@ -66,7 +71,7 @@ export default function FilterBar() {
     }
 
     replace(`${pathname}?${params.toString()}`);
-  }, [debouncedSearchQuery, filters, sortField, sortDirection, pathname, replace, searchParams]);
+  }, [debouncedSearchQuery, filters, sortValue, pathname, replace, searchParams]);
 
   return (
     <div className={styles.filterBar}>
@@ -118,25 +123,20 @@ export default function FilterBar() {
       </div>
       {filters.status === PileItemStatus.QUEUED && (
         <div className={styles.sorting}>
-          <label htmlFor="sortBySelect">
-            Sort By:
-          </label>
+          <ArrowUpDown className={styles.icon} />
           <Select
             id="sortBySelect"
-            onChange={(value) => setSortField(value as string)}
-            value={sortField}
+            aria-label="Sort By"
+            onChange={(value) => setSortValue(value as SortStateValue)}
+            value={sortValue}
           >
-            <option value="orderIndex">My Order</option>
-            <option value="artistName">Artist Name</option>
-            <option value="albumName">Album Name</option>
-            <option value="addedAt">Added At</option>
-          </Select>
-          <Select
-            onChange={(value) => setSortDirection(value as ('ASC' | 'DESC'))}
-            value={sortDirection}
-          >
-            <option value="ASC">Ascending</option>
-            <option value="DESC">Descending</option>
+            <option value="orderIndex-DESC">My Order</option>
+            <option value="artistName-ASC"><span>Artist Name – </span><ArrowUpAZ /></option>
+            <option value="artistName-DESC"><span>Artist Name – </span><ArrowDownAZ /></option>
+            <option value="albumName-ASC"><span>Album Name – </span><ArrowUpAZ /></option>
+            <option value="albumName-DESC"><span>Album Name – </span><ArrowDownAZ /></option>
+            <option value="addedAt-ASC"><span>Added At – </span><ArrowUpAZ /></option>
+            <option value="addedAt-DESC"><span>Added At – </span><ArrowDownAZ /></option>
           </Select>
         </div>
       )}
