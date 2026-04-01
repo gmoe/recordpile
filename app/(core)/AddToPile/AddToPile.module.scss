@@ -1,37 +1,54 @@
-.resultItem {
+.content {
   display: grid;
-  max-width: 800px;
-  padding: 8px;
-  gap: 12px;
-  grid-template-columns: min-content 1fr 1fr;
-  border-bottom: 1px solid #aaa;
-  list-style: none;
+  grid-template-rows: min-content 1fr;
+  height: 100%;
 
-  img {
-    height: 100px;
-    width: 100px;
-    object-fit: cover;
+  .searchForm {
+    display: grid;
+    margin-bottom: 16px;
+    grid-template-columns: 1fr min-content;
+    grid-gap: 8px;
   }
 
-  .albumSection {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
+  .results {
+    overflow-y: auto;
 
-    .album {
-      font-weight: 600;
-      font-size: 1.25rem;
+    .resultItem {
+      display: grid;
+      max-width: 800px;
+      padding: 8px;
+      gap: 12px;
+      grid-template-columns: min-content 1fr 1fr;
+      border-bottom: 1px solid #aaa;
+      list-style: none;
+
+      img {
+        height: 100px;
+        width: 100px;
+        object-fit: cover;
+      }
+
+      .albumSection {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+
+        .album {
+          font-weight: 600;
+          font-size: 1.25rem;
+        }
+        .artist {
+        }
+      }
+
+      .controls {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        align-items: end;
+      }
+
+      &:last-child { border-bottom: 0; }
     }
-    .artist {
-    }
   }
-
-  .controls {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    align-items: end;
-  }
-
-  &:last-child { border-bottom: 0; }
 }

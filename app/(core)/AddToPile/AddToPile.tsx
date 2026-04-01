@@ -9,7 +9,6 @@ import {
   DialogContent,
   DialogHeading,
   DialogDescription,
-  DialogClose,
 } from '@/app/components/Dialog';
 import SearchInput from '@/app/components/SearchInput';
 import { createPileItem, searchForNewItems, type ClientReleaseGroup } from '../my-pile/actions';
@@ -17,29 +16,32 @@ import styles from './AddToPile.module.scss';
 
 export default function AddToPile() {
   const [searchValue, setSearchValue] = useState<string>('');
-  const [isPending, startTransition] = useTransition();
+  const [isSearchFetching, startSearchTransition] = useTransition();
+  const [isAddingItem, startAddTransition] = useTransition();
   const [results, setResults] = useState<MBResultList<ClientReleaseGroup> | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
 
   const handleSearch = useCallback(() => {
-    startTransition(async () => {
+    startSearchTransition(async () => {
       if (!searchValue.length) return;
       const result = await searchForNewItems(searchValue);
       setResults(result);
     });
   }, [searchValue, setResults]);
 
-  const handleAddToPile = useCallback(async (
+  const handleAddToPile = useCallback((
     item: ClientReleaseGroup
   ) => {
-    await createPileItem({
-      albumName: item.title,
-      artistName: item.artistCredit.map(artist => artist.name).join(', '),
-      musicBrainzReleaseGroupId: item.id,
+    startAddTransition(async () => {
+      await createPileItem({
+        albumName: item.title,
+        artistName: item.artistCredit.map(artist => artist.name).join(', '),
+        musicBrainzReleaseGroupId: item.id,
+      });
+      setSearchValue('');
+      setResults(null);
+      setIsDialogOpen(false);
     });
-    setSearchValue('');
-    setResults(null);
-    setIsDialogOpen(false);
   }, [setSearchValue, setResults, setIsDialogOpen]);
 
   return (
@@ -51,17 +53,19 @@ export default function AddToPile() {
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogContent>
         <DialogHeading>Add to Pile</DialogHeading>
-        <DialogDescription>
-          <form action={handleSearch}>
+        <DialogDescription className={styles.content}>
+          <form className={styles.searchForm} action={handleSearch}>
             <SearchInput
               autoFocus
+              isLoading={isSearchFetching}
               onChange={(event) => setSearchValue(event.target.value)}
               onClear={() => setSearchValue('')}
               value={searchValue}
             />
+            <button type="submit">Search</button>
           </form>
         {results && (results.count ?? false) && (
-          <ol>
+          <ol className={styles.results}>
             {results.results.map((result) => (
               <li key={result.id} className={styles.resultItem}>
                 <Image
@@ -85,13 +89,13 @@ export default function AddToPile() {
                   </span>
                   <button
                     type="button"
-                    disabled={isPending}
+                    disabled
                   >
                     View (TODO)
                   </button>
                   <button
                     type="button"
-                    disabled={isPending || result.inPile}
+                    disabled={isSearchFetching || isAddingItem || result.inPile}
                     onClick={() => handleAddToPile(result)}
                   >
                     {result.inPile ? 'Already In Pile' : 'Add to Pile'}
@@ -102,7 +106,6 @@ export default function AddToPile() {
           </ol>
         )}
         </DialogDescription>
-        <DialogClose>Close</DialogClose>
       </DialogContent>
     </Dialog>
     </>

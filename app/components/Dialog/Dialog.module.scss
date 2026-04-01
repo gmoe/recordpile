@@ -1,16 +1,19 @@
 .overlay {
-  display: grid;
-  place-items: center;
-  background: rgba(0, 0, 0, 0.8);
+  overflow: hidden !important;
+  background: rgba(0, 0, 0, 0.5);
 }
 
 .dialog {
-  max-height: 90vh;
-  max-width: 1200px;
-  margin: 15px;
-  padding: 15px;
+  position: fixed;
+  top: 100%;
+  left: 50%;
+  bottom: 0;
+  height: calc(100vh - 80px);
+  width: 100vw;
+  max-width: 800px;
+  padding: 16px;
+  transform: translateX(-50%);
   background-color: var(--background);
-  overflow-y: auto;
 }
 
 .dialogHeader {

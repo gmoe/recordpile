@@ -6,11 +6,12 @@ import {
   ReactNode,
 } from 'react';
 import {
+  useId,
   useMergeRefs,
+  useTransitionStyles,
   FloatingPortal,
   FloatingFocusManager,
   FloatingOverlay,
-  useId,
 } from '@floating-ui/react';
 import { X } from 'lucide-react';
 import { useDialog, useDialogContext, DialogContext } from './utils';
@@ -67,7 +68,13 @@ export const DialogContent = forwardRef<
   const { context: floatingContext, ...context } = useDialogContext();
   const ref = useMergeRefs([context.refs.setFloating, propRef]);
 
-  if (!floatingContext.open) return null;
+  const { isMounted, styles: transitionStyles } = useTransitionStyles(floatingContext, {
+    duration: 500,
+    open: { top: '80px' },
+    close: { top: '100%' },
+  });
+
+  if (!isMounted) return null;
 
   return (
     <FloatingPortal>
@@ -78,7 +85,7 @@ export const DialogContent = forwardRef<
             aria-labelledby={context.labelId}
             aria-describedby={context.descriptionId}
             className={styles.dialog}
-            {...context.getFloatingProps(props)}
+            {...context.getFloatingProps({ ...props, style: transitionStyles })}
           >
             {props.children}
           </div>
@@ -137,17 +144,5 @@ export const DialogDescription = forwardRef<
     <div {...props} ref={ref} id={id}>
       {children}
     </div>
-  );
-});
-
-export const DialogClose = forwardRef<
-  HTMLButtonElement,
-  ButtonHTMLAttributes<HTMLButtonElement>
->(function DialogClose(props, ref) {
-  const { setOpen } = useDialogContext();
-  return (
-    <footer className={styles.dialogFooter}>
-      <button type="button" {...props} ref={ref} onClick={() => setOpen(false)} />
-    </footer>
   );
 });
