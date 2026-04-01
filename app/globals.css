@@ -30,6 +30,7 @@ html {
 }
 
 body {
+  padding: 0 8px;
   overflow: scroll;
   height: 100vh;
   overscroll-behavior: contain;
