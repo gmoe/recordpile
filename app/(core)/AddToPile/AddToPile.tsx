@@ -56,7 +56,6 @@ export default function AddToPile() {
         <DialogDescription className={styles.content}>
           <form className={styles.searchForm} action={handleSearch}>
             <SearchInput
-              autoFocus
               isLoading={isSearchFetching}
               onChange={(event) => setSearchValue(event.target.value)}
               onClear={() => setSearchValue('')}
