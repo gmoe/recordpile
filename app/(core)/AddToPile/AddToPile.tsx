@@ -1,6 +1,7 @@
 'use client';
 import { useCallback, useState, useTransition } from 'react';
 import Image from 'next/image';
+import { Plus } from 'lucide-react';
 
 import type { MBResultList } from '@/app/util/musicBrainz';
 import {
@@ -11,7 +12,7 @@ import {
   DialogClose,
 } from '@/app/components/Dialog';
 import SearchInput from '@/app/components/SearchInput';
-import { createPileItem, searchForNewItems, type ClientReleaseGroup } from '../../actions';
+import { createPileItem, searchForNewItems, type ClientReleaseGroup } from '../my-pile/actions';
 import styles from './AddToPile.module.scss';
 
 export default function AddToPile() {
@@ -44,7 +45,8 @@ export default function AddToPile() {
   return (
     <>
     <button type="button" onClick={() => setIsDialogOpen(true)}>
-      Add Item
+      <Plus />
+      <span>Add Item</span>
     </button>
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogContent>

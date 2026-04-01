@@ -3,10 +3,12 @@
   display: flex;
 
   .iconPrefix {
+    display: flex;
     position: absolute;
     left: 8px;
     top: 50%;
     transform: translateY(-50%);
+    align-items: center;
 
     .spinner {
       animation-name: spin;

@@ -1,10 +1,21 @@
 .header {
   display: flex;
-  padding-top: 16px;
+  padding-top: 12px;
   padding-bottom: 8px;
-  gap: 16px;
+  gap: 8px;
   justify-content: space-between;
   align-items: center;
+
+  .logoContainer {
+    width: 200px;
+    overflow: hidden;
+  }
+
+  .actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
 }
 
 .main {
@@ -13,5 +24,8 @@
 
 @media (width <= 650px) {
   .header {
+    .logoContainer {
+      width: 66px;
+    }
   }
 }

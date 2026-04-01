@@ -2,9 +2,15 @@
   list-style: none;
 
   .link {
+    display: inline-flex;
     padding: 8px 12px;
+    align-items: center;
+    gap: 4px;
     background: var(--surface-1);
     border: 1px solid var(--foreground);
+    transition-property: color, background;
+    transition-duration: 150ms;
+    transition-timing-function: ease-in;
 
     &:hover {
       text-decoration: underline;

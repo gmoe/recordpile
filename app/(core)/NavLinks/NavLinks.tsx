@@ -2,6 +2,7 @@
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { cva } from 'class-variance-authority';
+import { Layers, ChartPie } from 'lucide-react';
 
 import styles from './NavLinks.module.scss';
 
@@ -28,13 +29,15 @@ export default function NavLinks() {
             className={linkCva({ active: pathname.startsWith('/my-pile') })}
             href="/my-pile"
           >
-            My Pile
+            <Layers />
+            <span>Pile</span>
           </Link>
           <Link
             className={linkCva({ active: pathname.startsWith('/stats') })}
             href="/stats"
           >
-            My Stats
+            <ChartPie />
+            <span>Stats</span>
           </Link>
         </li>
       </ul>

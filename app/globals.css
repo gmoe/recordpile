@@ -85,7 +85,10 @@ button {
   display: inline-flex;
   margin: 1px;
   padding: 8px 12px;
+  align-items: center;
+  gap: 4px;
   font-size: 1rem;
+  white-space: nowrap;
   background: var(--foreground);
   color: var(--surface-1);
   border: 1px solid var(--foreground);
@@ -111,6 +114,11 @@ button:disabled {
   border-color: var(--gray);
   color: var(--foreground);
   cursor: not-allowed;
+}
+
+svg.lucide {
+  max-width: 18px;
+  max-height: 18px;
 }
 
 @media (prefers-color-scheme: dark) {

@@ -2,8 +2,7 @@
   display: grid;
   grid-template-areas:
     'search search'
-    'statusFilters sorting'
-    'addTo addTo';
+    'statusFilters sorting';
   grid-template-columns: 1fr min-content;
   justify-items: space-between;
   row-gap: 8px;
@@ -45,10 +44,6 @@
     }
   }
 
-  .addTo {
-    grid-area: addTo;
-  }
-
   .sorting {
     grid-area: sorting;
     display: inline-flex;
@@ -60,13 +55,5 @@
   .sortIcon {
     width: 16px;
     height: 16px;
-  }
-}
-
-@media (width <= 650px) {
-  .filterBar {
-    .addTo {
-      justify-self: center;
-    }
   }
 }
