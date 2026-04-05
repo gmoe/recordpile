@@ -1,9 +1,13 @@
-.title {
-  display: block;
-  text-align: center;
-}
+.historyContainer {
+  display: grid;
 
-.chartContainer {
-  display: flex;
-  align-items: center;
+  .title {
+    display: block;
+    text-align: center;
+  }
+
+  .chartContainer {
+    display: flex;
+    align-items: center;
+  }
 }

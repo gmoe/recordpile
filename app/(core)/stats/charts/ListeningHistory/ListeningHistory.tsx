@@ -51,7 +51,7 @@ export default function ListeningHistory({ albumHistory }: ListeningHistoryProps
   }, [chartElRef, chartData]);
 
   return (
-    <div className={chartStyles.container}>
+    <div className={`${chartStyles.container} ${styles.historyContainer}`}>
       <span className={styles.title}>Recent Listens</span>
       <div className={styles.chartContainer}>
         <canvas ref={chartElRef} />
