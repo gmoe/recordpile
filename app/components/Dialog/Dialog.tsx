@@ -1,7 +1,6 @@
 import {
   useLayoutEffect,
   forwardRef,
-  ButtonHTMLAttributes,
   HTMLProps,
   ReactNode,
 } from 'react';

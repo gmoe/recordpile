@@ -118,7 +118,7 @@ export const TooltipTrigger = forwardRef<
   HTMLProps<HTMLElement> & { asChild?: boolean }
 >(function TooltipTrigger({ children, asChild = false, ...props }, propRef) {
   const context = useTooltipContext();
-  const childrenRef = (children as any).ref;
+  const childrenRef = (children as any).ref; // eslint-disable-line @typescript-eslint/no-explicit-any -- TODO
   const ref = useMergeRefs([context.refs.setReference, propRef, childrenRef]);
 
   // `asChild` allows the user to pass any element as the anchor
@@ -129,7 +129,7 @@ export const TooltipTrigger = forwardRef<
         ref,
         ...props,
         ...children.props as object,
-        // @ts-ignore -- floating-ui is too narrow here
+        // @ts-expect-error -- floating-ui is too narrow here
         "data-state": context.open ? 'open' : 'closed',
       })
     );

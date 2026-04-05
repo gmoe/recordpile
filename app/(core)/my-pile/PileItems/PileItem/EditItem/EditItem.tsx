@@ -39,7 +39,7 @@ export default function EditItem({
         }, 3000);
       }
     });
-  }, [stagedNotes]);
+  }, [item.id, stagedNotes]);
 
   const [isDeleteTooltipVisible, setIsDeleteTooltipVisible] = useState<boolean>(false);
   const isStagingDeleteRef = useRef<boolean>(false);
@@ -66,7 +66,7 @@ export default function EditItem({
       window.removeEventListener('pointerup', handleCancel);
       isStagingDeleteRef.current = false;
     }, 3000);
-  }, [onOpenChange]);
+  }, [item.id, onOpenChange]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -139,6 +139,7 @@ export default function EditItem({
               </span>
               <button
                 type="submit"
+                disabled={isSavingNotes}
                 onClick={handleSaveNotes}
               >
                 Save
