@@ -15,6 +15,8 @@ type PileItemProps = {
   index: number;
   nextOrderIndex: number | null;
   previousOrderIndex: number | null;
+  firstOrderIndex: number | null;
+  lastOrderIndex: number | null;
 };
 
 const itemStyles = cva(styles.item, {
@@ -30,6 +32,8 @@ export default function PileItem({
   index,
   nextOrderIndex,
   previousOrderIndex,
+  firstOrderIndex,
+  lastOrderIndex,
 }: PileItemProps) {
   const [isEditDialogOpen, isSetEditDialogOpen] = useState<boolean>(false);
   const hideReorder = nextOrderIndex === null && previousOrderIndex === null;
@@ -44,7 +48,7 @@ export default function PileItem({
         <div className={styles.index}>
           <button
             disabled={previousOrderIndex === null}
-            onClick={() => reorderPileItem(item.id, previousOrderIndex as number)}
+            onClick={() => reorderPileItem(item.id, firstOrderIndex as number)}
           >
             <ChevronsUp size={16} />
           </button>
@@ -65,7 +69,7 @@ export default function PileItem({
           </div>
           <button
             disabled={nextOrderIndex === null}
-            onClick={() => reorderPileItem(item.id, nextOrderIndex as number)}
+            onClick={() => reorderPileItem(item.id, lastOrderIndex as number)}
           >
             <ChevronsDown size={16} />
           </button>

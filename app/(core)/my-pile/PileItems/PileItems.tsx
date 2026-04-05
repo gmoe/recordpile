@@ -42,6 +42,14 @@ export default function PileItems({ pileItems }: PileItemsProps) {
             ? pileItems[index + 1]?.orderIndex ?? null
             : null
           }
+          firstOrderIndex={isShowingQueuedItems
+            ? pileItems[0]?.orderIndex ?? null
+            : null
+          }
+          lastOrderIndex={isShowingQueuedItems
+            ? pileItems[pileItems.length - 1]?.orderIndex ?? null
+            : null
+          }
         />
       ))}
     </ol>
