@@ -1,23 +1,38 @@
 .item {
+  $interior-padding: 12px;
   display: grid;
-  padding: 16px;
-  grid-template-areas: 'index cover info controls';
-  grid-template-columns: min-content min-content 1fr min-content;
+  padding-right: $interior-padding;
+  grid-template-areas: 'index cover info';
+  grid-template-columns: min-content min-content 1fr;
   align-items: center;
   gap: 16px;
   border: 1px solid var(--foreground);
   background: var(--surface-1);
 
   &.hideReorder {
+    padding: 12px 0;
+    padding-left: 12px;
     grid-template-areas: 'cover info controls';
-    grid-template-columns: min-content 1fr min-content;
+    grid-template-columns: min-content 1fr;
   }
 
   .index {
     grid-area: index;
     display: grid;
+    height: 100%;
+    padding: 0 4px;
+    margin-right: 4px;
     align-content: center;
     justify-items: center;
+    gap: 12px;
+    border-right: 1px solid var(--foreground);
+
+    .innerIndex {
+      display: grid;
+      align-content: center;
+      justify-items: center;
+      gap: 4px;
+    }
 
     button {
       padding: 4px;
@@ -25,62 +40,50 @@
       background: var(--background);
       color: var(--foreground);
 
-      &:disabled {
-        pointer-events: none;
-        opacity: 0;
-      }
-
       &:hover {
         background: var(--foreground);
         color: var(--background);
+      }
+
+      &:disabled {
+        cursor: not-allowed;
+        opacity: 0.5;
       }
     }
   }
 
   img {
     grid-area: cover;
-    width: 100px;
-    height: 100px;
     color: var(--foreground);
+    cursor: pointer;
   }
 
   .albumInfo {
     grid-area: info;
     display: grid;
-    gap: 4px;
+    padding: $interior-padding 0;
+    gap: 8px;
+    cursor: pointer;
 
-    .artist {
+    .album {
       font-weight: 600;
       font-size: 1.25rem;
     }
 
-    textarea {
-      width: 100%;
-      resize: vertical;
+    .date {
+      font-size: 0.75rem;
     }
-  }
-
-  .controls {
-    grid-area: controls;
-    display: grid;
-    justify-self: end;
-    gap: 4px;
-    white-space: nowrap;
   }
 }
 
 @media (width <= 600px) {
   .item {
-    grid-template-areas:
-    'index cover controls'
-    '_ info info';
-    grid-template-columns: min-content 1fr 1fr;
+    gap: 8px;
 
-    &.hideReorder {
-      grid-template-areas:
-      'cover controls'
-      'info info';
-      grid-template-columns: 1fr 1fr;
+    .albumInfo {
+      .album {
+        font-size: 1rem;
+      }
     }
   }
 }

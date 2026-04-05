@@ -48,9 +48,10 @@ a {
 }
 
 input, textarea {
-  padding: 8px;
+  padding: 12px;
   background: var(--surface-1);
   color: var(--foreground);
+  font-family: inherit;
   font-size: 1rem;
   border: 1px solid var(--foreground);
 }

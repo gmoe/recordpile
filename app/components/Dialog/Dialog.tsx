@@ -69,7 +69,7 @@ export const DialogContent = forwardRef<
   const ref = useMergeRefs([context.refs.setFloating, propRef]);
 
   const { isMounted, styles: transitionStyles } = useTransitionStyles(floatingContext, {
-    duration: 500,
+    duration: 325,
     open: { top: '80px' },
     close: { top: '100%' },
   });

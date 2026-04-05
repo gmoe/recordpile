@@ -52,7 +52,7 @@ export default function ListeningHistory({ albumHistory }: ListeningHistoryProps
 
   return (
     <div className={chartStyles.container}>
-      <span className={styles.title}>Listens This Month</span>
+      <span className={styles.title}>Recent Listens</span>
       <div className={styles.chartContainer}>
         <canvas ref={chartElRef} />
       </div>

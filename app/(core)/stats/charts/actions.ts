@@ -7,6 +7,7 @@ import {
   subDays,
   format,
 } from 'date-fns';
+import { UTCDate, utc } from '@date-fns/utc';
 import { sql, count, between, gt, eq, desc, and } from 'drizzle-orm';
 
 import { database } from '@/app/db';
@@ -49,10 +50,10 @@ export async function getNumberAlbumsHeard(
   timeFrame: 'month' | 'year'
 ): Promise<AlbumsHeardHistory[]> {
   const startDate = timeFrame === 'month'
-    ? startOfMonth(new Date())
-    : startOfYear(new Date());
+    ? subDays(new UTCDate(), 30, { in: utc })
+    : startOfYear(new UTCDate(), { in: utc });
 
-  const endDate = new Date();
+  const endDate = new UTCDate();
 
   const statsResult = await database
     .select({
@@ -87,9 +88,9 @@ export async function getTotalAlbumCount(
 
   const startDate = (() => {
     switch (timeFrame) {
-      case '30days': return subDays(now, 30);
-      case 'month': return startOfMonth(now);
-      case 'year': return startOfYear(now);
+      case '30days': return subDays(now, 30, { in: utc });
+      case 'month': return startOfMonth(now, { in: utc });
+      case 'year': return startOfYear(now, { in: utc });
     }
   })();
 
@@ -110,10 +111,10 @@ export async function getTopArtistsHeard(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const startDate = (() => {
     switch (timeFrame) {
-      case '30days': return subDays(now, 30);
-      case 'month': return startOfMonth(now);
-      case 'year': return startOfYear(now);
-      case 'allTime': return (new Date(0));
+      case '30days': return subDays(now, 30, { in: utc });
+      case 'month': return startOfMonth(now, { in: utc });
+      case 'year': return startOfYear(now, { in: utc });
+      case 'allTime': return (new Date(0), { in: utc });
     }
   })();
 

@@ -91,10 +91,13 @@ export default function FilterBar() {
           role="switch"
           aria-checked={filters.status === PileItemStatus.QUEUED}
           className={filterCva({ selected: filters.status === PileItemStatus.QUEUED })}
-          onClick={() => setFilters((s) => ({
-            ...s,
-            status: PileItemStatus.QUEUED,
-          }))}
+          onClick={() => {
+            setFilters((s) => ({
+              ...s,
+              status: PileItemStatus.QUEUED,
+            }));
+            setSortValue('orderIndex-DESC');
+          }}
         >
           {PileItemStatusLabels[PileItemStatus.QUEUED]}
         </button>

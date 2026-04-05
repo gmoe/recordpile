@@ -1,0 +1,76 @@
+.content {
+  display: grid;
+  grid-template-areas:
+   'art art'
+   'info info'
+   'dates controls'
+   'notes notes';
+  grid-template-rows: min-content min-content min-content 1fr;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+
+  .albumArt {
+    grid-area: art;
+    width: 100%;
+    min-width: 332px;
+    min-height: 332px;
+    padding-bottom: 16px;
+    justify-self: center;
+    object-fit: contain;
+    border-bottom: 1px solid var(--foreground);
+  }
+
+  .albumInfo {
+    grid-area: info;
+    display: grid;
+    padding-bottom: 16px;
+    gap: 4px;
+    border-bottom: 1px solid var(--foreground);
+
+    .artist {
+      font-weight: 600;
+      font-size: 1.25rem;
+    }
+  }
+
+  .dates {
+    grid-area: dates;
+    display: grid;
+    align-content: center;
+    gap: 4px;
+
+    .date {
+      display: flex;
+      gap: 4px;
+
+      .label {
+        font-weight: 600;
+      }
+    }
+  }
+
+  .controls {
+    grid-area: controls;
+    display: grid;
+    grid-template-columns: min-content 1fr;
+    gap: 4px;
+  }
+
+  .notes {
+    grid-area: notes;
+    display: grid;
+    gap: 4px;
+
+    textarea {
+      min-height: 120px;
+      resize: none;
+    }
+
+    .noteControls {
+      display: flex;
+      align-items: center;
+      justify-self: end;
+      gap: 4px;
+    }
+  }
+}
