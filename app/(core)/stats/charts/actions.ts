@@ -114,7 +114,7 @@ export async function getTopArtistsHeard(
       case '30days': return subDays(now, 30, { in: utc });
       case 'month': return startOfMonth(now, { in: utc });
       case 'year': return startOfYear(now, { in: utc });
-      case 'allTime': return (new Date(0), { in: utc });
+      case 'allTime': return (new Date(0));
     }
   })();
 
