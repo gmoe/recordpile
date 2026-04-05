@@ -3,7 +3,8 @@ import { revalidatePath } from 'next/cache';
 import { notFound } from 'next/navigation';
 import { MusicBrainzApi } from 'musicbrainz-api';
 import { DiscogsClient } from '@lionralfs/discogs-client';
-import { asc, desc, eq, ilike, and, or, inArray, gt, lte, gte, lt, sql } from 'drizzle-orm';
+import { asc, desc, eq, ilike, and, or, inArray } from 'drizzle-orm';
+import { generateKeyBetween } from 'fractional-indexing';
 
 import { SortableContract } from '@/app/api/types';
 import { sanitizeReleaseGroupList, type MBReleaseGroup, type MBResultList } from '@/app/util/musicBrainz';
@@ -31,15 +32,15 @@ export type PileItemSearchFilters = {
     owned?: boolean;
     status?: PileItemStatus[];
   };
-  sort?: SortableContract<PileItem, 'orderIndex' | 'artistName' | 'albumName' | 'addedAt' | 'finishedAt' | 'didNotFinishAt'>;
+  sort?: SortableContract<PileItem, 'position' | 'artistName' | 'albumName' | 'addedAt' | 'finishedAt' | 'didNotFinishAt'>;
 };
 
 export async function getPileItems(
   searchFilters: PileItemSearchFilters = {},
 ): Promise<ClientPileItem[]> {
   const { field: sortField, order: sortOrder } = searchFilters?.sort ?? {
-    field: 'orderIndex',
-    order: 'DESC',
+    field: 'position',
+    order: 'ASC',
   };
 
   const orderDir = sortOrder === 'ASC' ? asc : desc;
@@ -130,6 +131,14 @@ export async function createPileItem(pileItem: {
   // TODO validation
   item.artistName = pileItem.artistName;
   item.albumName = pileItem.albumName;
+
+  // Generate a fractional-indexing position after the current last item
+  const lastItem = await database.query.pileItems.findFirst({
+    columns: { position: true },
+    orderBy: [desc(pileItems.position)],
+  });
+  item.position = generateKeyBetween(lastItem?.position ?? null, null);
+
   if (pileItem.musicBrainzReleaseGroupId) {
     item.musicBrainzReleaseGroupId = pileItem.musicBrainzReleaseGroupId;
     const coverImageRes = await fetch(
@@ -142,6 +151,7 @@ export async function createPileItem(pileItem: {
 
   await database.insert(pileItems).values(item);
 
+  // Notify client-side containers that items have changed
   revalidatePath('/my-pile');
 }
 
@@ -154,93 +164,11 @@ export async function updatePileItem(
   revalidatePath('/my-pile');
 }
 
-// export async function reorderPileItem(id: PileItem['id'], newPosition: number) {
-  // const con = await dbSource();
-
-  // await con.dataSource.transaction(async manager => {
-  //   const item = await manager.findOne(PileItem, { where: { id } });
-  //   if (!item) {
-  //     notFound();
-  //     return;
-  //   }
-  //   const oldPosition = item.orderIndex;
-
-  //   if (newPosition > oldPosition) {
-  //     // Moving down: decrement order of items between old and new position
-  //     await manager
-  //       .createQueryBuilder()
-  //       .update(PileItem)
-  //       .set({ orderIndex: () => 'orderIndex - 1' })
-  //       .where('orderIndex > :oldPos AND orderIndex <= :newPos', {
-  //         oldPos: oldPosition,
-  //         newPos: newPosition
-  //       })
-  //       .execute();
-  //   } else {
-  //     // Moving up: increment order of items between new and old position
-  //     await manager
-  //       .createQueryBuilder()
-  //       .update(PileItem)
-  //       .set({ orderIndex: () => 'orderIndex + 1' })
-  //       .where('orderIndex >= :newPos AND orderIndex < :oldPos', {
-  //         newPos: newPosition,
-  //         oldPos: oldPosition
-  //       })
-  //       .execute();
-  //   }
-
-  //   await manager.update(PileItem, id, { orderIndex: newPosition });
-  // });
-  // revalidatePath('/my-pile');
-// }
-//
-
-export async function reorderPileItem(id: PileItem['id'], newPosition: number) {
-  await database.transaction(async (tx) => {
-    // Find the item
-    const [item] = await tx
-      .select()
-      .from(pileItems)
-      .where(eq(pileItems.id, id))
-      .limit(1);
-
-    if (!item) {
-      notFound();
-      return;
-    }
-
-    const oldPosition = item.orderIndex;
-
-    if (newPosition > oldPosition) {
-      // Moving down: decrement order of items between old and new position
-      await tx
-        .update(pileItems)
-        .set({ orderIndex: sql`${pileItems.orderIndex} - 1` })
-        .where(
-          and(
-            gt(pileItems.orderIndex, oldPosition),
-            lte(pileItems.orderIndex, newPosition)
-          )
-        );
-    } else {
-      // Moving up: increment order of items between new and old position
-      await tx
-        .update(pileItems)
-        .set({ orderIndex: sql`${pileItems.orderIndex} + 1` })
-        .where(
-          and(
-            gte(pileItems.orderIndex, newPosition),
-            lt(pileItems.orderIndex, oldPosition)
-          )
-        );
-    }
-
-    // Update the item's position
-    await tx
-      .update(pileItems)
-      .set({ orderIndex: newPosition })
-      .where(eq(pileItems.id, id));
-  });
+export async function reorderPileItem(id: PileItem['id'], newPosition: string) {
+  await database
+    .update(pileItems)
+    .set({ position: newPosition })
+    .where(eq(pileItems.id, id));
 
   revalidatePath('/my-pile');
 }

@@ -3,6 +3,7 @@ import Image from 'next/image';
 import logo from '../logo.svg';
 import NavLinks from './NavLinks';
 import AddToPile from './AddToPile';
+import OfflineIndicator from '@/app/components/OfflineIndicator/OfflineIndicator';
 import styles from './layout.module.scss';
 
 export default function RootLayout({
@@ -24,6 +25,7 @@ export default function RootLayout({
       <main className={styles.main}>
         {children}
       </main>
+      <OfflineIndicator />
     </>
   );
 }

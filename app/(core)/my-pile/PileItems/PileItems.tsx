@@ -3,14 +3,17 @@ import { useSearchParams } from 'next/navigation';
 
 import { PileItemStatus } from '@/app/db/schemas/pileItems';
 import { ClientPileItem } from '../actions';
+import { type ReorderDirection } from '../PileItemsContainer';
 import PileItem from './PileItem';
 import styles from './PileItems.module.scss';
 
 interface PileItemsProps {
   pileItems: ClientPileItem[];
+  onReorder: (itemId: string, direction: ReorderDirection) => void;
+  onSyncComplete: () => void;
 }
 
-export default function PileItems({ pileItems }: PileItemsProps) {
+export default function PileItems({ pileItems, onReorder, onSyncComplete }: PileItemsProps) {
   const searchParams = useSearchParams();
   const filters = JSON.parse(searchParams.get('filters') ?? '{}');
 
@@ -34,14 +37,11 @@ export default function PileItems({ pileItems }: PileItemsProps) {
           key={item.id}
           item={item}
           index={index}
-          previousOrderIndex={isShowingQueuedItems
-            ? pileItems[index - 1]?.orderIndex ?? null
-            : null
-          }
-          nextOrderIndex={isShowingQueuedItems
-            ? pileItems[index + 1]?.orderIndex ?? null
-            : null
-          }
+          canReorder={isShowingQueuedItems}
+          isFirst={index === 0}
+          isLast={index === pileItems.length - 1}
+          onReorder={onReorder}
+          onSyncComplete={onSyncComplete}
         />
       ))}
     </ol>

@@ -38,6 +38,7 @@ export default function AddToPile() {
         artistName: item.artistCredit.map(artist => artist.name).join(', '),
         musicBrainzReleaseGroupId: item.id,
       });
+      window.dispatchEvent(new Event('pile-items-changed'));
       setSearchValue('');
       setResults(null);
       setIsDialogOpen(false);

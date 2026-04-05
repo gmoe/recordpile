@@ -33,7 +33,11 @@ export const pileItems = pgTable('pileItems', (t) => ({
   finishedAt: t.timestamp({ mode: 'date' }),
   didNotFinishAt: t.timestamp({ mode: 'date' }),
   notes: t.text(),
-  orderIndex: t.integer().notNull().default(0),
+  position: t.text().notNull().default('a0'),
+  positionUpdatedAt: t.timestamp({ mode: 'date' }),
+  statusUpdatedAt: t.timestamp({ mode: 'date' }),
+  notesUpdatedAt: t.timestamp({ mode: 'date' }),
+  ownedUpdatedAt: t.timestamp({ mode: 'date' }),
 }));
 
 export type PileItem = typeof pileItems.$inferSelect;

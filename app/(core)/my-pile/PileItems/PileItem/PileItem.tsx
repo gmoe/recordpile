@@ -5,7 +5,8 @@ import { ChevronsDown, ChevronDown, ChevronsUp, ChevronUp } from 'lucide-react';
 import { cva } from 'class-variance-authority';
 
 import { PileItemStatus } from '@/app/db/schemas/pileItems';
-import { type ClientPileItem, reorderPileItem } from '../../actions';
+import { type ClientPileItem } from '../../actions';
+import { type ReorderDirection } from '../../PileItemsContainer';
 import missingArt from './missingArt.svg';
 import EditItem from './EditItem';
 import styles from './PileItem.module.scss';
@@ -13,8 +14,11 @@ import styles from './PileItem.module.scss';
 type PileItemProps = {
   item: ClientPileItem;
   index: number;
-  nextOrderIndex: number | null;
-  previousOrderIndex: number | null;
+  canReorder: boolean;
+  isFirst: boolean;
+  isLast: boolean;
+  onReorder: (itemId: string, direction: ReorderDirection) => void;
+  onSyncComplete: () => void;
 };
 
 const itemStyles = cva(styles.item, {
@@ -28,44 +32,46 @@ const itemStyles = cva(styles.item, {
 export default function PileItem({
   item,
   index,
-  nextOrderIndex,
-  previousOrderIndex,
+  canReorder,
+  isFirst,
+  isLast,
+  onReorder,
+  onSyncComplete,
 }: PileItemProps) {
   const [isEditDialogOpen, isSetEditDialogOpen] = useState<boolean>(false);
-  const hideReorder = nextOrderIndex === null && previousOrderIndex === null;
 
   const toggleEditModal = useCallback(() => {
     isSetEditDialogOpen((open) => !open);
   }, []);
 
   return (
-    <li className={itemStyles({ hideReorder })}>
-      {!hideReorder && (
+    <li className={itemStyles({ hideReorder: !canReorder })}>
+      {canReorder && (
         <div className={styles.index}>
           <button
-            disabled={previousOrderIndex === null}
-            onClick={() => reorderPileItem(item.id, previousOrderIndex as number)}
+            disabled={isFirst}
+            onClick={() => onReorder(item.id, 'to-top')}
           >
             <ChevronsUp size={16} />
           </button>
           <div className={styles.innerIndex}>
             <button
-              disabled={previousOrderIndex === null}
-              onClick={() => reorderPileItem(item.id, previousOrderIndex as number)}
+              disabled={isFirst}
+              onClick={() => onReorder(item.id, 'up-one')}
             >
               <ChevronUp size={16} />
             </button>
             <span>{index + 1}</span>
             <button
-              disabled={nextOrderIndex === null}
-              onClick={() => reorderPileItem(item.id, nextOrderIndex as number)}
+              disabled={isLast}
+              onClick={() => onReorder(item.id, 'down-one')}
             >
               <ChevronDown size={16} />
             </button>
           </div>
           <button
-            disabled={nextOrderIndex === null}
-            onClick={() => reorderPileItem(item.id, nextOrderIndex as number)}
+            disabled={isLast}
+            onClick={() => onReorder(item.id, 'to-bottom')}
           >
             <ChevronsDown size={16} />
           </button>
@@ -98,7 +104,12 @@ export default function PileItem({
           <span className={styles.date}>DNF: {format(item.didNotFinishAt, 'PP')}</span>
         )}
       </div>
-      <EditItem item={item} open={isEditDialogOpen} onOpenChange={toggleEditModal} />
+      <EditItem
+        item={item}
+        open={isEditDialogOpen}
+        onOpenChange={toggleEditModal}
+        onSyncComplete={onSyncComplete}
+      />
     </li>
   );
 }

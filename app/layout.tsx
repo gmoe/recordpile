@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Rubik, Space_Mono } from 'next/font/google';
 import './globals.css';
 import styles from './layout.module.scss';
+import ServiceWorkerRegistration from './components/ServiceWorkerRegistration/ServiceWorkerRegistration';
 
 const rubikSans = Rubik({
   variable: '--font-rubik-sans',
@@ -27,6 +28,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${styles.main} ${rubikSans.variable} ${spaceMono.variable}`}>
+        <ServiceWorkerRegistration />
         {children}
       </body>
     </html>

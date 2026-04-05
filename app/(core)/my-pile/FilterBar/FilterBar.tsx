@@ -44,7 +44,7 @@ export default function FilterBar() {
   const [sortValue, setSortValue] = useState<SortStateValue>(
     searchParams.get('sortField') && searchParams.get('sortDirection')
       ?  `${searchParams.get('sortField') as SortContract['field']}-${searchParams.get('sortDirection') as SortContract['order']}`
-      : 'orderIndex-DESC'
+      : 'position-ASC'
   );
 
   useEffect(() => {
@@ -96,7 +96,7 @@ export default function FilterBar() {
               ...s,
               status: PileItemStatus.QUEUED,
             }));
-            setSortValue('orderIndex-DESC');
+            setSortValue('position-ASC');
           }}
         >
           {PileItemStatusLabels[PileItemStatus.QUEUED]}
@@ -133,7 +133,7 @@ export default function FilterBar() {
             onChange={(value) => setSortValue(value as SortStateValue)}
             value={sortValue}
           >
-            <option value="orderIndex-DESC">My Order</option>
+            <option value="position-ASC">My Order</option>
             <option value="artistName-ASC">
               <span>Artist</span>
               <ArrowUpAZ className={styles.sortIcon} />
