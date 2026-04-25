@@ -37,12 +37,12 @@
     button {
       padding: 4px;
       border: 0;
-      background: var(--background);
+      background: var(--surface-1);
       color: var(--foreground);
 
       &:hover {
         background: var(--foreground);
-        color: var(--background);
+        color: var(--surface-1);
       }
 
       &:disabled {
