@@ -14,6 +14,7 @@ import {
   PileItemInsert,
   PileItemStatus,
 } from '@/app/db/schemas/pileItems';
+import { SORTABLE_PILE_FIELDS } from './constants';
 
 const mbApi = new MusicBrainzApi({
   appName: 'record-pile',
@@ -31,16 +32,19 @@ export type PileItemSearchFilters = {
     owned?: boolean;
     status?: PileItemStatus[];
   };
-  sort?: SortableContract<PileItem, 'orderIndex' | 'artistName' | 'albumName' | 'addedAt' | 'finishedAt' | 'didNotFinishAt'>;
+  sort?: SortableContract<PileItem, typeof SORTABLE_PILE_FIELDS[number]>;
 };
 
 export async function getPileItems(
   searchFilters: PileItemSearchFilters = {},
 ): Promise<ClientPileItem[]> {
-  const { field: sortField, order: sortOrder } = searchFilters?.sort ?? {
+  const { field: argSortField, order: argSortOrder } = searchFilters?.sort ?? {
     field: 'orderIndex',
     order: 'DESC',
   };
+
+  const sortField = SORTABLE_PILE_FIELDS.includes(argSortField) ? argSortField : 'orderIndex';
+  const sortOrder = ['ASC', 'DESC'].includes(argSortOrder) ? argSortOrder : 'DESC';
 
   const orderDir = sortOrder === 'ASC' ? asc : desc;
   const items = await database.query.pileItems.findMany({

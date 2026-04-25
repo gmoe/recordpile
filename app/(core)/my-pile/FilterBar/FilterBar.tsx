@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { useSearchParams, usePathname, useRouter } from 'next/navigation';
+import { useSearchParams, usePathname, useRouter, type ReadonlyURLSearchParams } from 'next/navigation';
 import { cva } from 'class-variance-authority';
 import { ArrowUpDown, ArrowDownAZ, ArrowUpAZ } from 'lucide-react';
 
@@ -8,6 +8,8 @@ import { PileItemStatus, PileItemStatusLabels } from '@/app/db/schemas/pileItems
 import SearchInput from '@/app/components/SearchInput';
 import Select from '@/app/components/Select';
 import useDebounce from '@/app/util/useDebounce';
+import { ORDER_VALUES } from '@/app/api/types';
+import { SORTABLE_PILE_FIELDS } from '../constants';
 import type { PileItemSearchFilters } from '../actions';
 import styles from './FilterBar.module.scss';
 
@@ -26,6 +28,21 @@ type FilterState = {
 type SortContract = NonNullable<PileItemSearchFilters['sort']>;
 type SortStateValue = `${SortContract['field']}-${SortContract['order']}`;
 
+const getDefaultSortValue = (searchParams: ReadonlyURLSearchParams): SortStateValue => {
+  const field = searchParams.get('sortField');
+  const direction = searchParams.get('sortDirection');
+
+  if (
+    field
+    && SORTABLE_PILE_FIELDS.includes(field as typeof SORTABLE_PILE_FIELDS[number])
+    && direction
+    && ORDER_VALUES.includes(direction)
+  ) {
+    return `${field as SortContract['field']}-${direction as SortContract['order']}`;
+  }
+  return 'orderIndex-DESC';
+}
+
 export default function FilterBar() {
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -41,11 +58,7 @@ export default function FilterBar() {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const debouncedSearchQuery = useDebounce(searchQuery, 250);
 
-  const [sortValue, setSortValue] = useState<SortStateValue>(
-    searchParams.get('sortField') && searchParams.get('sortDirection')
-      ?  `${searchParams.get('sortField') as SortContract['field']}-${searchParams.get('sortDirection') as SortContract['order']}`
-      : 'orderIndex-DESC'
-  );
+  const [sortValue, setSortValue] = useState<SortStateValue>(getDefaultSortValue(searchParams));
 
   useEffect(() => {
     const params = new URLSearchParams(searchParams);
