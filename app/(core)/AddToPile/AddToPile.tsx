@@ -11,6 +11,7 @@ import {
   DialogDescription,
 } from '@/app/components/Dialog';
 import SearchInput from '@/app/components/SearchInput';
+import missingArt from '@/app/(core)/missingArt.svg';
 import { createPileItem, searchForNewItems, type ClientReleaseGroup } from '../my-pile/actions';
 import styles from './AddToPile.module.scss';
 
@@ -72,7 +73,10 @@ export default function AddToPile() {
                   width={200}
                   height={200}
                   src={`https://coverartarchive.org/release-group/${result.id}/front-200`}
-                  alt=""
+                  alt="Album art for search result"
+                  onError={(event) => {
+                    (event.target as HTMLImageElement).src = missingArt.src;
+                  }}
                 />
                 <div className={styles.albumSection}>
                   <span className={styles.album}>

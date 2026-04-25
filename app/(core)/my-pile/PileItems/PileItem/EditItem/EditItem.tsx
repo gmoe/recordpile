@@ -7,8 +7,8 @@ import { PileItemStatus } from '@/app/db/schemas/pileItems';
 import Select from '@/app/components/Select';
 import { Dialog, DialogContent, DialogHeading, DialogDescription } from '@/app/components/Dialog';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/app/components/Tooltip';
+import missingArt from '@/app/(core)/missingArt.svg';
 import { type ClientPileItem, updatePileItem, deletePileItem } from '../../../actions';
-import missingArt from '../missingArt.svg';
 import styles from './EditItem.module.scss';
 
 type EditItemProps = {

@@ -5,8 +5,8 @@ import { ChevronsDown, ChevronDown, ChevronsUp, ChevronUp } from 'lucide-react';
 import { cva } from 'class-variance-authority';
 
 import { PileItemStatus } from '@/app/db/schemas/pileItems';
+import missingArt from '@/app/(core)/missingArt.svg';
 import { type ClientPileItem, reorderPileItem } from '../../actions';
-import missingArt from './missingArt.svg';
 import EditItem from './EditItem';
 import styles from './PileItem.module.scss';
 
