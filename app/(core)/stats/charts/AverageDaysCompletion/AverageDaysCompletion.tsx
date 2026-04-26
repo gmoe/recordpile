@@ -13,7 +13,7 @@ export default async function AverageDaysCompletion() {
   return (
     <div className={chartStyles.container}>
       <div className={styles.average}>
-        <span>Average time to finish</span>
+        <span>Average time to listen</span>
         <span className={styles.data}>
           {average ? intl.format(average) : 'Unknown'}
         </span>

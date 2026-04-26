@@ -17,7 +17,7 @@ export default async function TotalAlbums() {
         <span className={styles.data}>
           {total ? intl.format(total) : 'Unknown'}
         </span>
-        <span>Days</span>
+        <span>Past 30 Days</span>
       </div>
     </div>
   );
