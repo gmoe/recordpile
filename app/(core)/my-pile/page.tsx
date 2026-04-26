@@ -21,7 +21,7 @@ export default async function MyPilePage(props: {
   const searchParams = await props.searchParams ?? {};
   const pileItems = await getPileItems({
     searchQuery: searchParams.query,
-    filters: searchParams.filters ? JSON.parse(searchParams.filters) : undefined,
+    filters: searchParams.filters ? JSON.parse(searchParams.filters) : { status: ['queued'] },
     sort: {
       field: searchParams.sortField ?? 'orderIndex',
       order: searchParams.sortDirection ?? 'DESC',
