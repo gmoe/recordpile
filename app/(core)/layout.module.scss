@@ -29,3 +29,9 @@
     }
   }
 }
+
+@media (display-mode: standalone) {
+  .header {
+    padding-top: 4px;
+  }
+}
