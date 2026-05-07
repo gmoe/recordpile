@@ -84,7 +84,7 @@ export default function EditItem({
     startResyncingArt(async () => {
       await resyncPileItemAlbumArt(item.id, item.musicBrainzReleaseGroupId);
       if (albumArtRef.current) {
-        albumArtRef.current.src = item.coverImageUrl;
+        albumArtRef.current.src = `${item.coverImageUrl}?nocache=${Date.now()}`;
       }
       setIsMissingAlbumArt(false);
     });
