@@ -9,15 +9,21 @@
   grid-template-columns: 1fr 1fr;
   gap: 16px;
 
-  .albumArt {
+  .albumArtContainer {
     grid-area: art;
-    width: 100%;
-    min-width: 332px;
-    min-height: 332px;
+    display: grid;
     padding-bottom: 16px;
-    justify-self: center;
-    object-fit: contain;
+    place-content: center;
+    place-items: center;
+    gap: 8px;
     border-bottom: 1px solid var(--foreground);
+
+    .albumArt {
+      width: 100%;
+      min-width: 332px;
+      min-height: 332px;
+      object-fit: contain;
+    }
   }
 
   .albumInfo {

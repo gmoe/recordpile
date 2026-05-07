@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState, useTransition } from 'react';
+import { useCallback, useRef, useState, useTransition, type SyntheticEvent } from 'react';
 import Image from 'next/image';
 import { format } from 'date-fns';
 import { Trash } from 'lucide-react';
@@ -8,7 +8,12 @@ import Select from '@/app/components/Select';
 import { Dialog, DialogContent, DialogHeading, DialogDescription } from '@/app/components/Dialog';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/app/components/Tooltip';
 import missingArt from '@/app/(core)/missingArt.svg';
-import { type ClientPileItem, updatePileItem, deletePileItem } from '../../../actions';
+import {
+  type ClientPileItem,
+  resyncPileItemAlbumArt,
+  updatePileItem,
+  deletePileItem,
+} from '../../../actions';
 import styles from './EditItem.module.scss';
 
 type EditItemProps = {
@@ -68,22 +73,45 @@ export default function EditItem({
     }, 3000);
   }, [item.id, onOpenChange]);
 
+  const albumArtRef = useRef<HTMLImageElement | null>(null);
+  const [isMissingAlbumArt, setIsMissingAlbumArt] = useState<boolean>(false);
+  const [isResyncingArt, startResyncingArt] = useTransition();
+  const handleImageOnError = useCallback((event: SyntheticEvent<HTMLImageElement, Event>) => {
+    event.currentTarget.src = missingArt.src;
+    setIsMissingAlbumArt(true);
+  }, []);
+  const handleResyncAlbumArt = useCallback(() => {
+    startResyncingArt(async () => {
+      await resyncPileItemAlbumArt(item.id, item.musicBrainzReleaseGroupId);
+      if (albumArtRef.current) {
+        albumArtRef.current.src = item.coverImageUrl;
+      }
+      setIsMissingAlbumArt(false);
+    });
+  }, [albumArtRef, item.coverImageUrl, item.id, item.musicBrainzReleaseGroupId]);
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeading>Edit Item</DialogHeading>
         <DialogDescription className={styles.content}>
-          <Image
-            src={item.coverImageUrl}
-            alt={`Album art for ${item.albumName}`}
-            loading="lazy"
-            width={332}
-            height={332}
-            className={styles.albumArt}
-            onError={(event) => {
-              (event.target as HTMLImageElement).src = missingArt.src;
-            }}
-          />
+          <div className={styles.albumArtContainer}>
+            <Image
+              ref={albumArtRef}
+              src={item.coverImageUrl}
+              alt={`Album art for ${item.albumName}`}
+              loading="lazy"
+              width={332}
+              height={332}
+              className={styles.albumArt}
+              onError={handleImageOnError}
+            />
+            {isMissingAlbumArt && (
+              <button disabled={isResyncingArt} onClick={handleResyncAlbumArt}>
+                Refresh art
+              </button>
+            )}
+          </div>
           <div className={styles.albumInfo}>
             <span className={styles.artist}>{item.artistName}</span>
             <span className={styles.album}>{item.albumName}</span>

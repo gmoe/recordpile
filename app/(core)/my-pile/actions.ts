@@ -158,46 +158,20 @@ export async function updatePileItem(
   revalidatePath('/my-pile');
 }
 
-// export async function reorderPileItem(id: PileItem['id'], newPosition: number) {
-  // const con = await dbSource();
+export async function resyncPileItemAlbumArt(
+  id: PileItem['id'],
+  musicBrainzReleaseGroupId: PileItem['musicBrainzReleaseGroupId'],
+) {
+  const coverImageRes = await fetch(
+    `https://coverartarchive.org/release-group/${musicBrainzReleaseGroupId}/front-1200`
+  );
+  const arrayBuffer = await coverImageRes.arrayBuffer();
+  const coverImage = await Buffer.from(arrayBuffer);
+  const payload = { coverImage };
 
-  // await con.dataSource.transaction(async manager => {
-  //   const item = await manager.findOne(PileItem, { where: { id } });
-  //   if (!item) {
-  //     notFound();
-  //     return;
-  //   }
-  //   const oldPosition = item.orderIndex;
-
-  //   if (newPosition > oldPosition) {
-  //     // Moving down: decrement order of items between old and new position
-  //     await manager
-  //       .createQueryBuilder()
-  //       .update(PileItem)
-  //       .set({ orderIndex: () => 'orderIndex - 1' })
-  //       .where('orderIndex > :oldPos AND orderIndex <= :newPos', {
-  //         oldPos: oldPosition,
-  //         newPos: newPosition
-  //       })
-  //       .execute();
-  //   } else {
-  //     // Moving up: increment order of items between new and old position
-  //     await manager
-  //       .createQueryBuilder()
-  //       .update(PileItem)
-  //       .set({ orderIndex: () => 'orderIndex + 1' })
-  //       .where('orderIndex >= :newPos AND orderIndex < :oldPos', {
-  //         newPos: newPosition,
-  //         oldPos: oldPosition
-  //       })
-  //       .execute();
-  //   }
-
-  //   await manager.update(PileItem, id, { orderIndex: newPosition });
-  // });
-  // revalidatePath('/my-pile');
-// }
-//
+  await database.update(pileItems).set(payload).where(eq(pileItems.id, id));
+  revalidatePath('/my-pile');
+}
 
 export async function reorderPileItem(id: PileItem['id'], newPosition: number) {
   await database.transaction(async (tx) => {
