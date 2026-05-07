@@ -122,3 +122,9 @@ svg.lucide {
     color-scheme: dark;
   }
 }
+
+@media (display-mode: standalone) {
+  html, body {
+    scrollbar-color: unset;
+  }
+}
