@@ -18,17 +18,17 @@ html,
 body {
   height: 100vh;
   max-width: 100vw;
-  overflow-x: hidden;
+  overflow: hidden;
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-rubik-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  scrollbar-color: var(--foreground) transparent;
 }
 
 body {
   padding: 0 8px;
-  height: 100vh;
 }
 
 * {

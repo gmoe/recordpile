@@ -8,12 +8,15 @@
   top: 100%;
   left: 50%;
   bottom: 0;
+  display: grid;
   height: calc(100vh - 80px);
   width: 100vw;
   max-width: 800px;
   padding: 16px;
+  grid-template-rows: min-content 1fr min-content;
   transform: translateX(-50%);
   background-color: var(--background);
+  overflow-y: auto;
 }
 
 .dialogHeader {
@@ -38,6 +41,11 @@
       color: var(--background);
     }
   }
+}
+
+.dialogContent {
+  overflow-y: auto;
+  scrollbar-gutter: stable;
 }
 
 .dialogFooter {

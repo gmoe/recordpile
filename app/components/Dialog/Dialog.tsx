@@ -140,7 +140,7 @@ export const DialogDescription = forwardRef<
   }, [id, setDescriptionId]);
 
   return (
-    <div {...props} ref={ref} id={id}>
+    <div {...props} className={`${styles.dialogContent} ${props.className}`} ref={ref} id={id}>
       {children}
     </div>
   );
