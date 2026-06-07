@@ -1,0 +1,33 @@
+.tabs {
+  display: inline-flex;
+  align-items: center;
+  list-style: none;
+
+  .tab {
+    display: inline-flex;
+    padding: 8px 12px;
+    align-items: center;
+    gap: 4px;
+    background: var(--surface-1);
+    border: 1px solid var(--foreground);
+    border-right: 0;
+    transition-property: color, background;
+    transition-duration: 150ms;
+    transition-timing-function: ease-in;
+
+    &:hover {
+      text-decoration: underline;
+    }
+
+    &.active {
+      background: var(--foreground);
+      color: var(--background);
+      text-decoration: none;
+      cursor: default;
+    }
+  }
+
+  > li:last-child .tab {
+    border-right: 1px solid var(--foreground);
+  }
+}

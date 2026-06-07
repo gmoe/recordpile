@@ -1,18 +1,8 @@
 'use client';
 import { usePathname } from 'next/navigation';
-import Link from 'next/link';
-import { cva } from 'class-variance-authority';
 import { Layers, ChartPie } from 'lucide-react';
 
-import styles from './NavLinks.module.scss';
-
-const linkCva = cva(styles.link, {
-  variants: {
-    active: {
-      true: styles.active,
-    },
-  },
-});
+import Tabs from '@/app/components/Tabs';
 
 export default function NavLinks() {
   const pathname = usePathname();
@@ -22,25 +12,19 @@ export default function NavLinks() {
   }
 
   return (
-    <nav>
-      <ul className={styles.links}>
-        <li>
-          <Link
-            className={linkCva({ active: pathname.startsWith('/my-pile') })}
-            href="/my-pile"
-          >
-            <Layers />
-            <span>Pile</span>
-          </Link>
-          <Link
-            className={linkCva({ active: pathname.startsWith('/stats') })}
-            href="/stats"
-          >
-            <ChartPie />
-            <span>Stats</span>
-          </Link>
-        </li>
-      </ul>
-    </nav>
+    <Tabs>
+      <Tabs.Tab
+        active={pathname.startsWith('/my-pile')}
+        href="/my-pile"
+        icon={Layers}
+        label="Pile"
+      />
+      <Tabs.Tab
+        active={pathname.startsWith('/stats')}
+        href="/stats"
+        icon={ChartPie}
+        label="Stats"
+      />
+    </Tabs>
   );
 }
