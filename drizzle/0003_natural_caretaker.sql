@@ -1,0 +1,1 @@
+ALTER TABLE "pileItems" ADD COLUMN "coverImageUpdatedAt" timestamp;

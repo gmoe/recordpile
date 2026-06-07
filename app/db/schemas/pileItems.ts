@@ -29,6 +29,7 @@ export const pileItems = pgTable('pileItems', (t) => ({
   discogsReleaseId: t.varchar({ length: 255 }).unique(),
   musicBrainzReleaseGroupId: t.varchar({ length: 255 }).unique(),
   coverImage: bytea(),
+  coverImageUpdatedAt: t.timestamp({ mode: 'date' }).defaultNow(),
   addedAt: t.timestamp({ mode: 'date' }).defaultNow(),
   finishedAt: t.timestamp({ mode: 'date' }),
   didNotFinishAt: t.timestamp({ mode: 'date' }),

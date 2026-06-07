@@ -1,5 +1,4 @@
 import { useCallback, useState } from 'react';
-import Image from 'next/image';
 import { format } from 'date-fns';
 import { ChevronsDown, ChevronDown, ChevronsUp, ChevronUp } from 'lucide-react';
 import { cva } from 'class-variance-authority';
@@ -75,7 +74,7 @@ export default function PileItem({
           </button>
         </div>
       )}
-      <Image
+      <img
         src={item.coverImageUrl}
         alt={`Album art for ${item.albumName}`}
         loading="lazy"

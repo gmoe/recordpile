@@ -22,6 +22,20 @@
       "when": 1760322073658,
       "tag": "0002_orderIndexDefault",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1778165959819,
+      "tag": "0003_natural_caretaker",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1778167063598,
+      "tag": "0004_famous_clea",
+      "breakpoints": true
     }
   ]
 }

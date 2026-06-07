@@ -4,7 +4,7 @@ const isProduction = process.env.NODE_ENV !== 'development';
 
 export default defineConfig({
   dialect: 'postgresql',
-  schema: './app/new-db/schemas',
+  schema: './app/db/schemas',
   out: './drizzle',
   dbCredentials: {
     host: process.env.DATABASE_HOST!,

@@ -1,5 +1,4 @@
 import { useCallback, useRef, useState, useTransition, type SyntheticEvent } from 'react';
-import Image from 'next/image';
 import { format } from 'date-fns';
 import { Trash } from 'lucide-react';
 
@@ -75,18 +74,23 @@ export default function EditItem({
 
   const albumArtRef = useRef<HTMLImageElement | null>(null);
   const [isMissingAlbumArt, setIsMissingAlbumArt] = useState<boolean>(false);
+  const [hasRefreshedArt, setHasRefreshedArt] = useState<boolean>(false);
   const [isResyncingArt, startResyncingArt] = useTransition();
-  const handleImageOnError = useCallback((event: SyntheticEvent<HTMLImageElement, Event>) => {
-    event.currentTarget.src = missingArt.src;
-    setIsMissingAlbumArt(true);
-  }, []);
+  const handleImageOnError = useCallback((event: SyntheticEvent<HTMLImageElement, ErrorEvent>) => {
+    if (!hasRefreshedArt) {
+      event.currentTarget.src = missingArt.src;
+      setIsMissingAlbumArt(true);
+    }
+  }, [hasRefreshedArt]);
+
   const handleResyncAlbumArt = useCallback(() => {
     startResyncingArt(async () => {
       await resyncPileItemAlbumArt(item.id, item.musicBrainzReleaseGroupId);
       if (albumArtRef.current) {
-        albumArtRef.current.src = `${item.coverImageUrl}?nocache=${Date.now()}`;
+        albumArtRef.current.src = item.coverImageUrl;
       }
       setIsMissingAlbumArt(false);
+      setHasRefreshedArt(true);
     });
   }, [albumArtRef, item.coverImageUrl, item.id, item.musicBrainzReleaseGroupId]);
 
@@ -96,7 +100,7 @@ export default function EditItem({
         <DialogHeading>Edit Item</DialogHeading>
         <DialogDescription className={styles.content}>
           <div className={styles.albumArtContainer}>
-            <Image
+            <img
               ref={albumArtRef}
               src={item.coverImageUrl}
               alt={`Album art for ${item.albumName}`}

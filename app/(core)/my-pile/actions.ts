@@ -63,10 +63,16 @@ export async function getPileItems(
     ),
   });
 
-  return items.map((item) => ({
-    ...item,
-    coverImageUrl: `/api/cover-image/${item.id}`,
-  }));
+  return items.map((item) => {
+    const coverLastModified = encodeURIComponent((item.coverImageUpdatedAt === null
+      ? (new Date(Date.UTC(0, 0, 0, 0, 0, 0)))
+      : item.coverImageUpdatedAt).toISOString());
+
+    return {
+      ...item,
+      coverImageUrl: `/api/cover-image/${item.id}?lastModified=${coverLastModified}`,
+    };
+  });
 }
 
 export async function getDiscogsCollection() {
@@ -142,6 +148,7 @@ export async function createPileItem(pileItem: {
     const coverImage = await coverImageRes.arrayBuffer();
     const b = await Buffer.from(coverImage);
     item.coverImage = b;
+    item.coverImageUpdatedAt = new Date();
   }
 
   await database.insert(pileItems).values(item);
@@ -165,12 +172,23 @@ export async function resyncPileItemAlbumArt(
   const coverImageRes = await fetch(
     `https://coverartarchive.org/release-group/${musicBrainzReleaseGroupId}/front-1200`
   );
-  const arrayBuffer = await coverImageRes.arrayBuffer();
-  const coverImage = await Buffer.from(arrayBuffer);
-  const payload = { coverImage };
 
-  await database.update(pileItems).set(payload).where(eq(pileItems.id, id));
-  revalidatePath('/my-pile');
+  if (coverImageRes.ok) {
+    const arrayBuffer = await coverImageRes.arrayBuffer();
+    const coverImage = await Buffer.from(arrayBuffer);
+    const payload = {
+      coverImage,
+      coverImageUpdatedAt: new Date(),
+    };
+
+    await database.update(pileItems).set(payload).where(eq(pileItems.id, id));
+    revalidatePath(`/api/cover-image/${id}`);
+    revalidatePath('/my-pile');
+  } else {
+    console.error('Error refreshing album art for', id);
+    const text = await coverImageRes.text();
+    console.error(text);
+  }
 }
 
 export async function reorderPileItem(id: PileItem['id'], newPosition: number) {
