@@ -10,7 +10,7 @@ import { pileItems } from '@/app/db/schemas/pileItems';
 export type PileItemDetailResponse = Pick<
   Sanitize<IRelease> & {
     labelInfo: {
-      catalogNumber: string;
+      catalogNumber?: string;
       label: Sanitize<ILabel>;
     }
   },

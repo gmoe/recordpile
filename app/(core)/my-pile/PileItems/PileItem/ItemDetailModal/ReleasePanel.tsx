@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { intervalToDuration, type Duration } from 'date-fns';
+import { format, parseISO, intervalToDuration, type Duration } from 'date-fns';
 import { Info } from 'lucide-react';
 
 import type { PileItemDetailResponse } from '@/app/api/pile-item/[id]/route';
@@ -74,27 +74,29 @@ export default function ReleasePanel({ item, open }: ReleasePanelProps) {
       <h3>Release Info</h3>
       <dl className={styles.releaseInfo}>
         <dt>Release Date:</dt>
-        <dd>{releaseDetails.date}</dd>
+        <dd>{!releaseDetails.date ? 'Unknown' : format(parseISO(releaseDetails.date), 'PP')}</dd>
         <dt>Release Country:</dt>
-        <dd>{releaseDetails.country}</dd>
+        <dd>{releaseDetails.country ?? 'Unknown'}</dd>
         <dt>Record Label:</dt>
         <dd>
-          <div className={styles.labelInfo}>
-            <span>{releaseDetails.labelInfo.label.name}</span>
-            {Boolean(releaseDetails.labelInfo.label.disambiguation) && (
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Info />
-                </TooltipTrigger>
-                <TooltipContent>
-                  {releaseDetails.labelInfo.label.disambiguation}
-                </TooltipContent>
-              </Tooltip>
-            )}
-            <span>–</span>
-            <span>{releaseDetails.labelInfo.catalogNumber}</span>
-          </div>
+          {releaseDetails.labelInfo.label ? (
+            <div className={styles.labelInfo}>
+              <span>{releaseDetails.labelInfo.label.name}</span>
+              {Boolean(releaseDetails.labelInfo.label.disambiguation) && (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Info />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    {releaseDetails.labelInfo.label.disambiguation}
+                  </TooltipContent>
+                </Tooltip>
+              )}
+            </div>
+          ) : 'Unknown'}
         </dd>
+        <dt>Catalog Number:</dt>
+        <dd>{releaseDetails.labelInfo.catalogNumber ?? 'Unknown'}</dd>
       </dl>
       <hr />
       <div>
