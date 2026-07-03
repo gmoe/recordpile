@@ -107,8 +107,6 @@ export async function getTopArtistsHeard(
   timeFrame: '30days' | 'month' | 'year' | 'allTime'
 ): Promise<{ artistName: string, count: number }[]> {
   const now = new Date();
-  // TODO
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const startDate = (() => {
     switch (timeFrame) {
       case '30days': return subDays(now, 30, { in: utc });
@@ -124,7 +122,10 @@ export async function getTopArtistsHeard(
       count: count(),
     })
     .from(pileItems)
-    .where(eq(pileItems.status, PileItemStatus.FINISHED))
+    .where(and(
+      eq(pileItems.status, PileItemStatus.FINISHED),
+      gt(pileItems.finishedAt, startDate)
+    ))
     .groupBy(pileItems.artistName)
     .orderBy(({ count }) => desc(count));
 
