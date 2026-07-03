@@ -1,0 +1,43 @@
+.releasePanel {
+  display: grid;
+  height: fit-content;
+  grid-gap: 4px;
+
+  h3 {
+    margin-bottom: 8px;
+  }
+
+  hr {
+    width: 100%;
+    margin: 8px 0;
+  }
+
+  .releaseInfo {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 4px;
+
+    dt {
+      white-space: nowrap;
+    }
+
+    .labelInfo {
+      display: inline-flex;
+      gap: 4px;
+    }
+  }
+
+  .trackList {
+    max-width: 400px;
+
+    .track {
+      display: grid;
+      grid-template-columns: 30px 1fr min-content;
+      grid-gap: 8px;
+
+      .time {
+        font-family: monospace;
+      }
+    }
+  }
+}

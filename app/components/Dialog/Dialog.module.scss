@@ -54,4 +54,8 @@
   align-items: center;
   justify-content: end;
   gap: 8px;
+
+  &.center {
+    justify-content: center;
+  }
 }

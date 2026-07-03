@@ -5,9 +5,11 @@
 
   .tab {
     display: inline-flex;
+    margin: 0;
     padding: 8px 12px;
     align-items: center;
     gap: 4px;
+    color: var(--foreground);
     background: var(--surface-1);
     border: 1px solid var(--foreground);
     border-right: 0;

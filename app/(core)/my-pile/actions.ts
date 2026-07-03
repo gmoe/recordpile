@@ -1,12 +1,16 @@
 'use server';
 import { revalidatePath } from 'next/cache';
 import { notFound } from 'next/navigation';
-import { MusicBrainzApi } from 'musicbrainz-api';
 import { DiscogsClient } from '@lionralfs/discogs-client';
 import { asc, desc, eq, ilike, and, or, inArray, gt, lte, gte, lt, sql } from 'drizzle-orm';
 
 import { SortableContract } from '@/app/api/types';
-import { sanitizeReleaseGroupList, type MBReleaseGroup, type MBResultList } from '@/app/util/musicBrainz';
+import {
+  mbApi,
+  sanitizeReleaseGroupList,
+  type MBReleaseGroup,
+  type MBResultList,
+} from '@/app/lib/musicBrainz';
 import { database } from '@/app/db';
 import {
   pileItems,
@@ -15,12 +19,6 @@ import {
   PileItemStatus,
 } from '@/app/db/schemas/pileItems';
 import { SORTABLE_PILE_FIELDS } from './constants';
-
-const mbApi = new MusicBrainzApi({
-  appName: 'record-pile',
-  appVersion: '0.1.0',
-  appContactInfo: 'me@griffinmoe.com',
-});
 
 export type ClientPileItem = Omit<PileItem, 'coverImage'> & {
   coverImageUrl: string;

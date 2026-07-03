@@ -16,21 +16,37 @@ const tabCva = cva(styles.tab, {
 
 type TabProps = {
   active: boolean;
-  href: string;
+  href?: string;
   icon: LucideIcon;
+  onClick?: () => void;
   label: string;
-};
+} & ({ href: string } | { onClick: () => void; });
 
-function Tab({ active, href, icon: Icon, label }: TabProps) {
+function Tab({ active, href, onClick, icon: Icon, label }: TabProps) {
+  if (href) {
+    return (
+      <li>
+        <Link
+          className={tabCva({ active })}
+          onClick={onClick}
+          href={href}
+        >
+          <Icon />
+          <span>{label}</span>
+        </Link>
+      </li>
+    );
+  }
+
   return (
     <li>
-      <Link
+      <button
         className={tabCva({ active })}
-        href={href}
+        onClick={onClick}
       >
         <Icon />
         <span>{label}</span>
-      </Link>
+      </button>
     </li>
   );
 }

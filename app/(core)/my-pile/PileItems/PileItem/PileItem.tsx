@@ -6,7 +6,7 @@ import { cva } from 'class-variance-authority';
 import { PileItemStatus } from '@/app/db/schemas/pileItems';
 import missingArt from '@/app/(core)/missingArt.svg';
 import { type ClientPileItem, reorderPileItem } from '../../actions';
-import EditItem from './EditItem';
+import ItemDetailModal from './ItemDetailModal';
 import styles from './PileItem.module.scss';
 
 type PileItemProps = {
@@ -101,7 +101,7 @@ export default function PileItem({
           <span className={styles.date}>DNF: {format(item.didNotFinishAt, 'PP')}</span>
         )}
       </div>
-      <EditItem item={item} open={isEditDialogOpen} onOpenChange={toggleEditModal} />
+      <ItemDetailModal item={item} open={isEditDialogOpen} onOpenChange={toggleEditModal} />
     </li>
   );
 }

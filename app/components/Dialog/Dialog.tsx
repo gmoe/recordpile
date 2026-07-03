@@ -145,3 +145,18 @@ export const DialogDescription = forwardRef<
     </div>
   );
 });
+
+type DialogFooterProps = {
+  alignment?: 'center' | 'end';
+  children: ReactNode;
+};
+
+export function DialogFooter({ alignment = 'end', children }: DialogFooterProps) {
+  return (
+    <div
+      className={`${styles.dialogFooter} ${alignment === 'center' ? styles.center : ''}`}
+    >
+      {children}
+    </div>
+  );
+}

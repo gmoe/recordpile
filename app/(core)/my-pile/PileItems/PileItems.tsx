@@ -1,5 +1,6 @@
 'use client';
 import { useSearchParams } from 'next/navigation';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import { PileItemStatus } from '@/app/db/schemas/pileItems';
 import { ClientPileItem } from '../actions';
@@ -9,6 +10,8 @@ import styles from './PileItems.module.scss';
 interface PileItemsProps {
   pileItems: ClientPileItem[];
 }
+
+const queryClient = new QueryClient();
 
 export default function PileItems({ pileItems }: PileItemsProps) {
   const searchParams = useSearchParams();
@@ -28,30 +31,32 @@ export default function PileItems({ pileItems }: PileItemsProps) {
   }
 
   return (
-    <ol className={styles.pile}>
-      {pileItems.map((item, index) => (
-        <PileItem
-          key={item.id}
-          item={item}
-          index={index}
-          previousOrderIndex={isShowingQueuedItems
-            ? pileItems[index - 1]?.orderIndex ?? null
-            : null
-          }
-          nextOrderIndex={isShowingQueuedItems
-            ? pileItems[index + 1]?.orderIndex ?? null
-            : null
-          }
-          firstOrderIndex={isShowingQueuedItems
-            ? pileItems[0]?.orderIndex ?? null
-            : null
-          }
-          lastOrderIndex={isShowingQueuedItems
-            ? pileItems[pileItems.length - 1]?.orderIndex ?? null
-            : null
-          }
-        />
-      ))}
-    </ol>
+    <QueryClientProvider client={queryClient}>
+      <ol className={styles.pile}>
+        {pileItems.map((item, index) => (
+          <PileItem
+            key={item.id}
+            item={item}
+            index={index}
+            previousOrderIndex={isShowingQueuedItems
+              ? pileItems[index - 1]?.orderIndex ?? null
+              : null
+            }
+            nextOrderIndex={isShowingQueuedItems
+              ? pileItems[index + 1]?.orderIndex ?? null
+              : null
+            }
+            firstOrderIndex={isShowingQueuedItems
+              ? pileItems[0]?.orderIndex ?? null
+              : null
+            }
+            lastOrderIndex={isShowingQueuedItems
+              ? pileItems[pileItems.length - 1]?.orderIndex ?? null
+              : null
+            }
+          />
+        ))}
+      </ol>
+    </QueryClientProvider>
   );
 }
