@@ -66,7 +66,7 @@ function isRecord(value: unknown): value is MBRecord {
 
 export function sanitize<T extends MBRecord, S extends Sanitize<T>>(group: T): S {
   const entries = Object.entries(group);
-  const sanitized = Object.create(null);
+  const sanitized: Record<string, unknown> = {};
 
   for (const [key, value] of entries) {
     if (isRecord(value)) {
