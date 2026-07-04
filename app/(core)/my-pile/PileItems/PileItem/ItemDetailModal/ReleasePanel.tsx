@@ -79,7 +79,7 @@ export default function ReleasePanel({ item, open }: ReleasePanelProps) {
         <dd>{releaseDetails.country ?? 'Unknown'}</dd>
         <dt>Record Label:</dt>
         <dd>
-          {releaseDetails.labelInfo.label ? (
+          {releaseDetails.labelInfo?.label ? (
             <div className={styles.labelInfo}>
               <span>{releaseDetails.labelInfo.label.name}</span>
               {Boolean(releaseDetails.labelInfo.label.disambiguation) && (
@@ -96,7 +96,7 @@ export default function ReleasePanel({ item, open }: ReleasePanelProps) {
           ) : 'Unknown'}
         </dd>
         <dt>Catalog Number:</dt>
-        <dd>{releaseDetails.labelInfo.catalogNumber ?? 'Unknown'}</dd>
+        <dd>{releaseDetails.labelInfo?.catalogNumber ?? 'Unknown'}</dd>
       </dl>
       <hr />
       <div>
