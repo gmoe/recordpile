@@ -3,7 +3,7 @@ import { useCallback, useState, useTransition } from 'react';
 import Image from 'next/image';
 import { Plus } from 'lucide-react';
 
-import type { MBResultList } from '@/app/util/musicBrainz';
+import type { MBResultList } from '@/app/lib/musicBrainz';
 import {
   Dialog,
   DialogContent,
