@@ -11,6 +11,7 @@ import {
   DialogDescription,
 } from '@/app/components/Dialog';
 import SearchInput from '@/app/components/SearchInput';
+import Spinner from '@/app/components/Spinner';
 import missingArt from '@/app/(core)/missingArt.svg';
 import { createPileItem, searchForNewItems, type ClientReleaseGroup } from '../my-pile/actions';
 import styles from './AddToPile.module.scss';
@@ -64,50 +65,53 @@ export default function AddToPile() {
             />
             <button type="submit">Search</button>
           </form>
-        {results && (results.count ?? false) && (
-          <ol className={styles.results}>
-            {results.results.map((result) => (
-              <li key={result.id} className={styles.resultItem}>
-                <Image
-                  loading="lazy"
-                  width={200}
-                  height={200}
-                  src={`https://coverartarchive.org/release-group/${result.id}/front-200`}
-                  alt="Album art for search result"
-                  onError={(event) => {
-                    (event.target as HTMLImageElement).src = missingArt.src;
-                  }}
-                />
-                <div className={styles.albumSection}>
-                  <span className={styles.album}>
-                    {result.title}
-                  </span>
-                  <span className={styles.artist}>
-                    {result.artistCredit.map(artist => artist.name).join(', ')}
-                  </span>
-                </div>
-                <div className={styles.controls}>
-                  <span>
-                    Release Date: {result.firstReleaseDate ?? 'Unknown'}
-                  </span>
-                  <button
-                    type="button"
-                    disabled
-                  >
-                    View (TODO)
-                  </button>
-                  <button
-                    type="button"
-                    disabled={isSearchFetching || isAddingItem || result.inPile}
-                    onClick={() => handleAddToPile(result)}
-                  >
-                    {result.inPile ? 'Already In Pile' : 'Add to Pile'}
-                  </button>
-                </div>
-              </li>
-            ))}
-          </ol>
-        )}
+          {!results && isSearchFetching && (
+            <Spinner label="Fetching results" />
+          )}
+          {results && (results.count ?? false) && (
+            <ol className={styles.results}>
+              {results.results.map((result) => (
+                <li key={result.id} className={styles.resultItem}>
+                  <Image
+                    loading="lazy"
+                    width={200}
+                    height={200}
+                    src={`https://coverartarchive.org/release-group/${result.id}/front-200`}
+                    alt="Album art for search result"
+                    onError={(event) => {
+                      (event.target as HTMLImageElement).src = missingArt.src;
+                    }}
+                  />
+                  <div className={styles.albumSection}>
+                    <span className={styles.album}>
+                      {result.title}
+                    </span>
+                    <span className={styles.artist}>
+                      {result.artistCredit.map(artist => artist.name).join(', ')}
+                    </span>
+                  </div>
+                  <div className={styles.controls}>
+                    <span>
+                      Release Date: {result.firstReleaseDate ?? 'Unknown'}
+                    </span>
+                    <button
+                      type="button"
+                      disabled
+                    >
+                      View (TODO)
+                    </button>
+                    <button
+                      type="button"
+                      disabled={isSearchFetching || isAddingItem || result.inPile}
+                      onClick={() => handleAddToPile(result)}
+                    >
+                      {result.inPile ? 'Already In Pile' : 'Add to Pile'}
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          )}
         </DialogDescription>
       </DialogContent>
     </Dialog>
