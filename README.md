@@ -2,9 +2,10 @@
 
 RecordPile is the TBR list for your music. Backed by the MusicBrainz and Discogs APIs.
 
-It's currently in active development and not ready for regular use.
+It's currently in active development, but the core functionality works if you
+want to self-host it.
 
-![RecordPile screenshot featuring a list of albums](/docs/demo.png)
+![RecordPile screenshot featuring a list of albums](/docs/demo_2026-07-10.png)
 
 ## Local development
 
