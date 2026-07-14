@@ -5,9 +5,7 @@ RecordPile is the TBR list for your music. Backed by the MusicBrainz and Discogs
 It's currently in active development, but the core functionality works if you
 want to self-host it.
 
-<video controls height="600px">
-  <source src="/docs/demo-july-2026.webm" type="video/webm" />
-</video>
+<video src="/docs/demo-july-2026.webm" controls height="600px"></video>
 
 ## Local development
 
